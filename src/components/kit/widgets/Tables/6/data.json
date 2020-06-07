@@ -1,0 +1,21 @@
+[
+  {
+    "key": "1",
+    "userName": {"name": "FieldObject A", "position": "Test"},
+    "location": "INPUTID",
+    "value": "Test"
+  },
+  {
+    "key": "2",
+    "userName": {"name": "FieldObject B", "position": "Test"},
+    "location": "INPUTID",
+    "value": "Test"
+
+  },
+  {
+    "key": "3",
+    "userName": {"name": "FieldObject C", "position": "Test"},
+    "location": "INPUTID",
+    "value": "test"
+  }
+]
