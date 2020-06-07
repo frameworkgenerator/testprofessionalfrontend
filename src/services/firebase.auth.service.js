@@ -11,8 +11,8 @@ const firebaseConfig = {
   projectId: 'ventus-e8164',
   storageBucket: 'ventus-e8164.appspot.com',
   messagingSenderId: '639759208106',
-  appId: "1:639759208106:web:e2962e6f13a62633cc0ad3",
-  measurementId: "G-YEW5P44ZVY"
+  appId: '1:639759208106:web:e2962e6f13a62633cc0ad3',
+  measurementId: 'G-YEW5P44ZVY',
 }
 
 const firebaseApp = firebase.initializeApp(firebaseConfig)
@@ -20,17 +20,19 @@ const firebaseAuth = firebase.auth()
 export default firebaseApp
 
 export async function login() {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  provider.addScope('profile');
-  provider.addScope('email');
+  const provider = new firebase.auth.GoogleAuthProvider()
+  provider.addScope('profile')
+  provider.addScope('email')
 
-  return firebaseAuth.signInWithPopup(provider)
+  return firebaseAuth
+    .signInWithPopup(provider)
     .then(() => true)
     .catch(error =>
       notification.warning({
         message: error.code,
         description: error.message,
-      }))
+      }),
+    )
 }
 
 export async function currentAccount() {
@@ -41,7 +43,6 @@ export async function currentAccount() {
         resolve(firebaseAuth.currentUser)
       }
       const unsubscribe = auth.onAuthStateChanged(user => {
-        console.log(user.refreshToken);
         userLoaded = true
         unsubscribe()
         resolve(user)
@@ -52,7 +53,5 @@ export async function currentAccount() {
 }
 
 export async function logout() {
-  return firebaseAuth
-    .signOut()
-    .then(() => true)
+  return firebaseAuth.signOut().then(() => true)
 }
