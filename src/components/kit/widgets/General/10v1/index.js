@@ -10,7 +10,7 @@ const General10v1 = props => {
       </div>
       <div className="text-center">
         <div className="text-dark font-weight-bold font-size-18">{displayName}</div>
-        <div className="text-uppercase font-size-12 mb-3">Support team</div>
+        <div className="text-uppercase font-size-12 mb-3">Development team</div>
         <button type="button" className={`btn btn-primary ${style.btnWithAddon}`}>
           <span className={`${style.btnAddon}`}>
             <i className={`${style.btnAddonIcon} fe fe-plus-circle`} />
