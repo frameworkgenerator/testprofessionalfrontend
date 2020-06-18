@@ -34,9 +34,7 @@ export function* LOAD_CURRENT_ACCOUNT() {
   })
   const response = yield call(currentAccount)
   if (response) {
-    console.log(response);
-
-    const { uid: id, email, photoURL: avatar,displayName } = response
+    const { uid: id, email, photoURL: avatar, displayName } = response
     yield put({
       type: 'user/SET_STATE',
       payload: {

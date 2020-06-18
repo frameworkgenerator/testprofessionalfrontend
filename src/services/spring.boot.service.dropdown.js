@@ -1,3 +1,3 @@
 export default async function getDropDownData() {
-  return ['INPUTID', 'INPUTCSS', 'TEST']
+  return ['INPUTID', 'INPUTCSS', 'INPUTXPATH']
 }

@@ -1,19 +1,19 @@
 import React, { useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { ReactSortable } from 'react-sortablejs'
-import { withRouter } from "react-router-dom";
-import {connect} from "react-redux";
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { Button } from 'antd'
 import style from './style.module.scss'
 import WorkItemModal from '../../../ui-kits/antd/implementations/modal'
-
 
 const mapStateToProps = ({ service }) => ({
   dataSets: service.dataSets,
 })
 
-const ExtraAppsJiraAgileBoard = (props) => {
+const ExtraAppsJiraAgileBoard = props => {
   const { dataSets = [] } = props
-  const [data] = useState(dataSets)
+  const [data, updateData] = React.useState(dataSets)
 
   const agileItems = {
     name: 'Button',
@@ -22,176 +22,178 @@ const ExtraAppsJiraAgileBoard = (props) => {
     component: <WorkItemModal datasetId={1} />,
   }
 
+  const add = () => {
+    const newData = [...data]
+    const row = data[data.length - 1]
+    row.datasetcontext.status = 'Backlog'
+    row.id = 4
+    newData.push(row)
+    updateData(newData)
+    console.log(JSON.stringify(data))
+  }
+
   const [backlogItems, setBacklogItems] = useState(
-    data.map((item, index) => {
-      if ( item.datasetcontext.status === 'Backlog' )
-      return(
-        <div className={style.card} key={index.toString()}>
-          <div className={style.content}>
-            <div className={`${style.flag} bg-primary`} />
-            <div className="d-flex flex-wrap-reverse align-items-center">
-              <h5 className="text-dark font-size-18 mt-2 mr-auto">{item.name}</h5>
+    data
+      .filter(item => item.datasetcontext.status === 'Backlog')
+      .map(item => {
+        return (
+          <div className={style.card} key={item.id.toString()}>
+            <div className={style.content}>
+              <div className={`${style.flag} bg-primary`} />
+              <div className="d-flex flex-wrap-reverse align-items-center">
+                <h5 className="text-dark font-size-18 mt-2 mr-auto">{item.name}</h5>
+                <h5 className="text-dark font-size-8 mt-2 mr-auto">ID: {item.id}</h5>
+              </div>
+              <div className="text-gray-5 mb-2">Description: {item.description}</div>
+              <div>{agileItems.component}</div>
             </div>
-            <div className="text-gray-5 mb-2">Description: {item.description}</div>
-            <div>{agileItems.component}</div>
           </div>
-        </div>
-    )
-    return (
-      <div> </div>
-    )
-    }
-    )
+        )
+      }),
   )
 
   const [todoItems, setTodoItems] = useState(
-    data.map((item, index) => {
-        if ( item.datasetcontext.status === 'ToDo' )
-          return(
-            <div className={style.card} key={index.toString()}>
-              <div className={style.content}>
-                <div className={`${style.flag} bg-primary`} />
-                <div className="d-flex flex-wrap-reverse align-items-center">
-                  <h5 className="text-dark font-size-18 mt-2 mr-auto">{item.name}</h5>
-                </div>
-                <div className="text-gray-5 mb-2">Description: {item.description}</div>
-                <div>{agileItems.component}</div>
-              </div>
-            </div>
-          )
+    data
+      .filter(item => item.datasetcontext.status === 'ToDo')
+      .map(item => {
         return (
-          <div> </div>
+          <div className={style.card} key={item.id.toString()}>
+            <div className={style.content}>
+              <div className={`${style.flag} bg-primary`} />
+              <div className="d-flex flex-wrap-reverse align-items-center">
+                <h5 className="text-dark font-size-18 mt-2 mr-auto">{item.name}</h5>
+                <h5 className="text-dark font-size-8 mt-2 mr-auto">ID: {item.id}</h5>
+              </div>
+              <div className="text-gray-5 mb-2">Description: {item.description}</div>
+              <div>{agileItems.component}</div>
+            </div>
+          </div>
         )
-      }
-    )
+      }),
   )
 
   const [inprogressItems, setInprogressItems] = useState(
-    data.map((item, index) => {
-        if ( item.datasetcontext.status === 'InProgress' )
-          return(
-            <div className={style.card} key={index.toString()}>
-              <div className={style.content}>
-                <div className={`${style.flag} bg-primary`} />
-                <div className="d-flex flex-wrap-reverse align-items-center">
-                  <h5 className="text-dark font-size-18 mt-2 mr-auto">{item.name}</h5>
-                </div>
-                <div className="text-gray-5 mb-2">Description: {item.description}</div>
-                <div>{agileItems.component}</div>
-              </div>
-            </div>
-          )
+    data
+      .filter(item => item.datasetcontext.status === 'InProgress')
+      .map(item => {
         return (
-          <div> </div>
+          <div className={style.card} key={item.id.toString()}>
+            <div className={style.content}>
+              <div className={`${style.flag} bg-primary`} />
+              <div className="d-flex flex-wrap-reverse align-items-center">
+                <h5 className="text-dark font-size-18 mt-2 mr-auto">{item.name}</h5>
+                <h5 className="text-dark font-size-8 mt-2 mr-auto">ID: {item.id}</h5>
+              </div>
+              <div className="text-gray-5 mb-2">Description: {item.description}</div>
+              <div>{agileItems.component}</div>
+            </div>
+          </div>
         )
-      }
-    )
+      }),
   )
 
   const [completed, setCompleted] = useState(
-    data.map((item, index) => {
-        if ( item.datasetcontext.status === 'Done' )
-          return(
-            <div className={style.card} key={index.toString()}>
-              <div className={style.content}>
-                <div className={`${style.flag} bg-primary`} />
-                <div className="d-flex flex-wrap-reverse align-items-center">
-                  <h5 className="text-dark font-size-18 mt-2 mr-auto">{item.name}</h5>
-                </div>
-                <div className="text-gray-5 mb-2">Description: {item.description}</div>
-                <div>{agileItems.component}</div>
-              </div>
-            </div>
-          )
+    data
+      .filter(item => item.datasetcontext.status === 'Done')
+      .map(item => {
         return (
-          <div> </div>
+          <div className={style.card} key={item.id.toString()}>
+            <div className={style.content}>
+              <div className={`${style.flag} bg-primary`} />
+              <div className="d-flex flex-wrap-reverse align-items-center">
+                <h5 className="text-dark font-size-18 mt-2 mr-auto">{item.name}</h5>
+                <h5 className="text-dark font-size-8 mt-2 mr-auto">ID: {item.id}</h5>
+              </div>
+              <div className="text-gray-5 mb-2">Description: {item.description}</div>
+              <div>{agileItems.component}</div>
+            </div>
+          </div>
         )
-      }
+      }),
+  )
+
+  const update = async event => {
+    const getIdFromTitle = event.item.innerText.split('ID: ')[1].split('Description')[0]
+    console.log(getIdFromTitle)
+  }
+
+  const componentContent = () => {
+    return (
+      <div>
+        <Helmet title="Jira Agile Board" />
+        <div className="d-flex align-items-center mb-4">
+          <div className="kit__utils__avatarGroup mr-4 flex-shrink-0" />
+          <Button onClick={() => add()} type="primary" className="mb-1 mr-1">
+            + Add
+          </Button>
+        </div>
+        <div className="row">
+          <div className="col-lg-3 col-md-6">
+            <div className="card bg-light py-3 px-2">
+              <h3 className="font-weight-bold text-dark font-size-18 mb-3">Backlog</h3>
+              <ReactSortable
+                group="issues"
+                style={{ minHeight: 500 }}
+                list={backlogItems}
+                setList={setBacklogItems}
+                key="id"
+                onChange={item => update(item)}
+              >
+                {backlogItems.map(item => item)}
+              </ReactSortable>
+            </div>
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <div className="card bg-light py-3 px-2">
+              <h3 className="font-weight-bold text-dark font-size-18 mb-3">To Do</h3>
+              <ReactSortable
+                group="issues"
+                style={{ minHeight: 500 }}
+                list={todoItems}
+                setList={setTodoItems}
+                key="id"
+                onChange={item => update(item)}
+              >
+                {todoItems.map(item => item)}
+              </ReactSortable>
+            </div>
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <div className="card bg-light py-3 px-2">
+              <h3 className="font-weight-bold text-dark font-size-18 mb-3">In Progress</h3>
+              <ReactSortable
+                group="issues"
+                style={{ minHeight: 500 }}
+                list={inprogressItems}
+                setList={setInprogressItems}
+                key="id"
+                onChange={item => update(item)}
+              >
+                {inprogressItems.map(item => item)}
+              </ReactSortable>
+            </div>
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <div className="card bg-light py-3 px-2">
+              <h3 className="font-weight-bold text-dark font-size-18 mb-3">Completed</h3>
+              <ReactSortable
+                group="issues"
+                style={{ minHeight: 500 }}
+                list={completed}
+                setList={setCompleted}
+                onChange={item => update(item)}
+                key="id"
+              >
+                {completed.map(item => item)}
+              </ReactSortable>
+            </div>
+          </div>
+        </div>
+      </div>
     )
-  )
+  }
 
-  return (
-    <div>
-      <Helmet title="Jira Agile Board" />
-      <div className="d-flex align-items-center mb-4">
-        <div className="kit__utils__avatarGroup mr-4 flex-shrink-0">
-          <div className="kit__utils__avatar kit__utils__avatar--size46 kit__utils__avatar--rounded">
-            <img src="resources/images/avatars/1.jpg" alt="User 1" />
-          </div>
-          <div className="kit__utils__avatar kit__utils__avatar--size46 kit__utils__avatar--rounded">
-            <img src="resources/images/avatars/2.jpg" alt="User 2" />
-          </div>
-          <div className="kit__utils__avatar kit__utils__avatar--size46 kit__utils__avatar--rounded">
-            <img src="resources/images/avatars/3.jpg" alt="User 3" />
-          </div>
-          <div className="kit__utils__avatar kit__utils__avatar--size46 kit__utils__avatar--rounded">
-            <img src="resources/images/avatars/4.jpg" alt="User 4" />
-          </div>
-          <button type="button" className="kit__utils__avatarGroupAdd">
-            <i className="fe fe-plus" />
-          </button>
-        </div>
-        <a className="mr-4" href="#" onClick={e => e.preventDefault()}>
-          Only My Issues
-        </a>
-        <div>Recently Updated</div>
-      </div>
-      <div className="row">
-        <div className="col-lg-3 col-md-6">
-          <div className="card bg-light py-3 px-2">
-            <h3 className="font-weight-bold text-dark font-size-18 mb-3">Backlog</h3>
-            <ReactSortable
-              group="issues"
-              style={{ minHeight: 500 }}
-              list={backlogItems}
-              setList={setBacklogItems}
-            >
-              {backlogItems.map(item => item)}
-            </ReactSortable>
-          </div>
-        </div>
-        <div className="col-lg-3 col-md-6">
-          <div className="card bg-light py-3 px-2">
-            <h3 className="font-weight-bold text-dark font-size-18 mb-3">To Do</h3>
-            <ReactSortable
-              group="issues"
-              style={{ minHeight: 500 }}
-              list={todoItems}
-              setList={setTodoItems}
-            >
-              {todoItems.map(item => item)}
-            </ReactSortable>
-          </div>
-        </div>
-        <div className="col-lg-3 col-md-6">
-          <div className="card bg-light py-3 px-2">
-            <h3 className="font-weight-bold text-dark font-size-18 mb-3">In Progress</h3>
-            <ReactSortable
-              group="issues"
-              style={{ minHeight: 500 }}
-              list={inprogressItems}
-              setList={setInprogressItems}
-            >
-              {inprogressItems.map(item => item)}
-            </ReactSortable>
-          </div>
-        </div>
-        <div className="col-lg-3 col-md-6">
-          <div className="card bg-light py-3 px-2">
-            <h3 className="font-weight-bold text-dark font-size-18 mb-3">Completed</h3>
-            <ReactSortable
-              group="issues"
-              style={{ minHeight: 500 }}
-              list={completed}
-              setList={setCompleted}
-            >
-              {completed.map(item => item)}
-            </ReactSortable>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
+  return <div>{componentContent()}</div>
 }
-export default withRouter(connect(mapStateToProps)(ExtraAppsJiraAgileBoard))
 
+export default withRouter(connect(mapStateToProps)(ExtraAppsJiraAgileBoard))

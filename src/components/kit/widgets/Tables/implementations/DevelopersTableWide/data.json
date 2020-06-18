@@ -1,12 +1,12 @@
 [
   {
-       "datasetId": 1,
-       "defaultvalue": "gebruikersnaam123",
-       "objectaction": "INPUTID",
-       "objectname": "username",
-       "objectselector": "username",
-       "valuelength": "255",
-       "valuerange": "string"
-     }
+    "id": 999,
+    "objectname": "Input",
+    "objectselector": "Input",
+    "objectaction": "INPUTID",
+    "defaultvalue": "Input",
+    "valuelength": "255",
+    "valuerange": "0-99"
+  }
 ]
 

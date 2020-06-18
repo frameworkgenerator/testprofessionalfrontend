@@ -47,30 +47,29 @@ const ProjectTableWide = props => {
   const { projects = [] } = props
   const [form] = Form.useForm()
   const [data, setData] = useState(projects)
-  const [editingKey, setEditingKey] = useState('')
-
   const [userInput, setUserInput] = useState(false)
+  const [editingKey, setEditingKey] = useState('')
+  const [getSelectedRowKeys, setSelectedRowKeys] = useState([])
+  const [count, setCount] = useState(0)
 
-  const isEditing = record => record.id === editingKey
+  const isEditing = record => record.key === editingKey
 
   const edit = record => {
     form.setFieldsValue({
       name: '',
+      description: '',
       lead: '',
       ...record,
     })
-    setEditingKey(record.id)
+    setEditingKey(record.key)
   }
 
-  const sessionStorageStoreDataSetId = () => {
-    sessionStorage.setItem('datasetId', 1)
-    console.log(sessionStorage.getItem('datasetId'))
+  const sessionStorageStoreDataSetId = key => {
+    sessionStorage.setItem('projectId', key)
   }
 
   const openProject = () => {
     if (userInput === true) {
-      console.log('open project')
-      sessionStorageStoreDataSetId()
       return (
         <Redirect
           to={{
@@ -87,11 +86,11 @@ const ProjectTableWide = props => {
     setEditingKey('')
   }
 
-  const save = async id => {
+  const save = async key => {
     try {
       const row = await form.validateFields()
       const newData = [...data]
-      const index = newData.findIndex(item => id === item.id)
+      const index = newData.findIndex(item => key === item.key)
 
       if (index > -1) {
         const item = newData[index]
@@ -99,7 +98,11 @@ const ProjectTableWide = props => {
         setData(newData)
         setEditingKey('')
       } else {
-        newData.push(row)
+        if (row != null) {
+          newData.push(newData[newData.length - 1])
+        } else {
+          newData.push(row)
+        }
         setData(newData)
         setEditingKey('')
       }
@@ -118,26 +121,27 @@ const ProjectTableWide = props => {
     {
       title: 'DESCRIPTION',
       dataIndex: 'description',
-      width: '15%',
+      width: '25%',
       editable: true,
     },
     {
       title: 'LEAD',
       dataIndex: 'lead',
-      width: '15%',
+      width: '25%',
       editable: true,
     },
     {
       title: 'OPERATION',
-      width: '15%',
+      width: '25%',
       dataIndex: 'operation',
       render: (_, record) => {
         const editable = isEditing(record)
         return editable ? (
           <span>
             <a
-              href="javascript:"
-              onClick={() => save(record.id)}
+              id={`Save_${record.key}`}
+              href="javascript:;"
+              onClick={() => save(record.key)}
               style={{
                 marginRight: 8,
               }}
@@ -150,10 +154,21 @@ const ProjectTableWide = props => {
           </span>
         ) : (
           <div>
-            <Button disabled={editingKey !== ''} onClick={() => edit(record)}>
+            <Button
+              id={`Edit_${record.key}`}
+              disabled={editingKey !== ''}
+              onClick={() => edit(record)}
+            >
               Edit
             </Button>
-            <Button onClick={() => setUserInput(true)}>Open</Button>
+            <Button
+              onClick={() => {
+                setUserInput(true)
+                sessionStorageStoreDataSetId(record.id)
+              }}
+            >
+              Open
+            </Button>
           </div>
         )
       },
@@ -176,9 +191,60 @@ const ProjectTableWide = props => {
     }
   })
 
+  const onSelectChange = selected => {
+    console.log('selectedRowKeys changed: ', selected)
+    const newData = [...getSelectedRowKeys, ...selected]
+    setSelectedRowKeys(newData)
+  }
+
+  const handleAdd = () => {
+    const newData = {
+      key: count,
+      id: count,
+      description: `Description ${count}`,
+      lead: `Lead`,
+      name: `Name ${count}`,
+    }
+    setData([...data, newData])
+    setCount(count + 1)
+  }
+
+  const handleRemove = () => {
+    const dataSource = [...data]
+    getSelectedRowKeys.forEach(function x(key) {
+      setData(dataSource.filter(item => item.key !== key))
+    })
+  }
+
+  const rowSelection = {
+    setSelectedRowKeys,
+    onChange: onSelectChange,
+  }
+
   return (
     <div>
-      <div>{openProject()}</div>
+      <div className="mb-1">
+        <Button
+          onClick={handleAdd}
+          type="primary"
+          style={{
+            marginBottom: 16,
+          }}
+        >
+          + Add
+        </Button>
+        &nbsp;
+        <Button
+          onClick={handleRemove}
+          type="primary"
+          style={{
+            marginBottom: 16,
+          }}
+        >
+          - Remove
+        </Button>
+      </div>
+      {openProject()}
       <Form form={form} component={false}>
         <Table
           components={{
@@ -190,10 +256,10 @@ const ProjectTableWide = props => {
           dataSource={data}
           columns={mergedColumns}
           rowClassName="editable-row"
+          rowSelection={rowSelection}
           pagination={{
             onChange: cancel,
           }}
-          style={{ width: '80%' }}
         />
       </Form>
     </div>

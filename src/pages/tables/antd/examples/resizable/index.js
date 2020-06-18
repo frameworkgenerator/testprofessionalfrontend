@@ -57,21 +57,21 @@ class TablesAntdBasic extends React.Component {
   data = [
     {
       key: 0,
-      date: '2018-02-11',
+      date: '2018-02-Testsets',
       amount: 120,
       type: 'income',
       note: 'transfer',
     },
     {
       key: 1,
-      date: '2018-03-11',
+      date: '2018-03-Testsets',
       amount: 243,
       type: 'income',
       note: 'transfer',
     },
     {
       key: 2,
-      date: '2018-04-11',
+      date: '2018-04-Testsets',
       amount: 98,
       type: 'income',
       note: 'transfer',

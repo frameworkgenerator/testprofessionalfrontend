@@ -1,53 +1,36 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { connect } from 'react-redux'
 import { FormattedMessage } from 'react-intl'
 import { Menu, Dropdown } from 'antd'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import styles from './style.module.scss'
 
-const IssuesHistory = () => {
+const mapStateToProps = ({ service }) => ({
+  testCases: service.testCases,
+})
+
+const IssuesHistory = props => {
+  const { testCases = [] } = props
+  const [data] = useState(testCases)
+
+  const [testCaseItems] = useState(
+    data.map(item => {
+      return (
+        <Menu.Item key={item.id}>
+          <Link to="/apps/testCase-management">
+            <i className="fe fe-check-circle mr-2" /> {item.testcasename}
+          </Link>
+        </Menu.Item>
+      )
+    }),
+  )
+
   const menu = (
     <Menu selectable={false}>
       <Menu.Item>
-        <Link to="/">Current Search</Link>
+        <Link to="/">My recently added testcases</Link>
       </Menu.Item>
-      <Menu.Item>
-        <Link to="/">Search for issues</Link>
-      </Menu.Item>
-      <Menu.Divider />
-      <Menu.ItemGroup title="Opened">
-        <Menu.Item>
-          <Link to="/">
-            <i className="fe fe-check-circle mr-2" /> CUI-125 Project Implemen...
-          </Link>
-        </Menu.Item>
-        <Menu.Item>
-          <Link to="/">
-            <i className="fe fe-check-circle mr-2" /> CUI-147 Active History Is...
-          </Link>
-        </Menu.Item>
-        <Menu.Item>
-          <Link to="/">
-            <i className="fe fe-check-circle mr-2" /> CUI-424 Ionicons Integrat...
-          </Link>
-        </Menu.Item>
-        <Menu.Item>
-          <Link to="/">More...</Link>
-        </Menu.Item>
-      </Menu.ItemGroup>
-      <Menu.ItemGroup title="Filters">
-        <Menu.Item>
-          <Link to="/">My Open Issues</Link>
-        </Menu.Item>
-        <Menu.Item>
-          <Link to="/">Reported by Me</Link>
-        </Menu.Item>
-      </Menu.ItemGroup>
-      <Menu.Divider />
-      <Menu.Item>
-        <Link to="/">
-          <i className="fe fe-settings mr-2" /> Settings
-        </Link>
-      </Menu.Item>
+      <Menu.ItemGroup title="Opened">{testCaseItems}</Menu.ItemGroup>
     </Menu>
   )
   return (
@@ -61,5 +44,4 @@ const IssuesHistory = () => {
     </Dropdown>
   )
 }
-
-export default IssuesHistory
+export default withRouter(connect(mapStateToProps)(IssuesHistory))

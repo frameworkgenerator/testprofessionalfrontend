@@ -43,6 +43,8 @@ export async function currentAccount() {
         resolve(firebaseAuth.currentUser)
       }
       const unsubscribe = auth.onAuthStateChanged(user => {
+        console.log('current account started')
+        console.log(firebaseAuth.currentUser.getIdToken())
         userLoaded = true
         unsubscribe()
         resolve(user)

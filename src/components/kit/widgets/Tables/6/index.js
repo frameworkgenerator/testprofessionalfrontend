@@ -56,7 +56,8 @@ const rowSelection = {
   },
 }
 
-const Table6 = () => {
+const Table6 = props => {
+  console.log(props)
   return (
     <div>
       <div className={`${style.textDivider} mb-2`}>

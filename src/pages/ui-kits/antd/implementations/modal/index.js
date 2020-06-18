@@ -27,7 +27,7 @@ class WorkItemModal extends React.Component {
       return (
         <Redirect
           to={{
-            pathname: '/apps/workitem',
+            pathname: '/apps/fields-management',
             state: { datasetId: '123' },
           }}
         />

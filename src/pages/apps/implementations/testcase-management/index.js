@@ -1,26 +1,33 @@
 import React, { useState } from 'react'
+import { withRouter, useHistory } from 'react-router-dom'
+import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import SortableTree, { changeNodeAtPath } from 'react-sortable-tree'
 import { SearchOutlined } from '@ant-design/icons'
-import { Input, Tooltip, Checkbox, Select } from 'antd'
+import { Input, Tooltip, Checkbox, Select, Button } from 'antd'
 import Table6 from 'components/kit/widgets/Tables/6'
 import style from './style.module.scss'
 
-const AppsTestcaseManagement = () => {
+const mapStateToProps = ({ service }) => ({
+  tests: service.tests,
+  testSteps: service.testSteps,
+})
+
+const AppsTestcaseManagement = props => {
+  const { tests = [], testSteps = [] } = props
+  const [testData] = useState(tests)
+  const [testStepData] = useState(testSteps)
+
   const taskInput = React.createRef()
-  const treeDataDefault = [
-    {
-      name: 'Teststep 1',
-      expanded: true,
-      children: [{ name: 'FieldObject A' }, { name: 'FieldObject B' }, { name: 'FieldObject C' }],
-    },
-    {
-      name: 'Teststep 2',
-      expanded: true,
-      children: [{ name: 'FieldObject D' }, { name: 'FieldObject E' }, { name: 'FieldObject F' }],
-    },
-  ]
+
+  const testDataToNameValue = testData.map(number => {
+    return { name: number.objectname }
+  })
+
+  const treeDataDefault = testStepData.map(number => {
+    return { name: number.teststepname, expanded: true, children: testDataToNameValue }
+  })
 
   const [treeData, setTreeData] = useState(treeDataDefault)
   const [hideInput, setHideInput] = useState(true)
@@ -45,9 +52,32 @@ const AppsTestcaseManagement = () => {
 
   const getNodeKey = ({ treeIndex }) => treeIndex
 
+  const history = useHistory()
+
+  const [availableTestObjects] = useState(
+    tests.map(item => {
+      return (
+        <Button
+          onClick={e => {
+            openProject(e)
+          }}
+          className={`${style.category} text-dark font-size-18`}
+        >
+          <span className="text-truncate">{item.objectname}</span>
+        </Button>
+      )
+    }),
+  )
+
+  const openProject = e => {
+    e.preventDefault()
+    history.push('/apps/tests-management')
+  }
+
   return (
     <div>
       <Helmet title="Testcase management" />
+      {openProject}
       <div className="row">
         <div className="col-12 col-md-3">
           <div className="mb-4">
@@ -61,48 +91,10 @@ const AppsTestcaseManagement = () => {
               <div
                 className={` ${style.category} ${style.title} text-dark font-size-18 font-weight-bold`}
               >
-                <span className="text-truncate">Datasets</span>
+                <span className="text-truncate">Available Testobjects</span>
               </div>
-              <a
-                href="#"
-                onClick={e => e.preventDefault()}
-                className={`${style.category} text-dark font-size-18`}
-              >
-                <span className="text-truncate">Testcase 1</span>
-              </a>
-              <a
-                href="#"
-                onClick={e => e.preventDefault()}
-                className={`${style.category} text-dark font-size-18`}
-              >
-                <span className="text-truncate">Testcase 2</span>
-              </a>
-              <div
-                className={` ${style.category} ${style.title} text-dark font-size-18 font-weight-bold`}
-              >
-                <span className="text-truncate">Testcase 3</span>
-              </div>
-              <a
-                href="#"
-                onClick={e => e.preventDefault()}
-                className={`${style.category} ${style.current} text-dark font-size-18`}
-              >
-                <span className="text-truncate">Testcase 4</span>
-              </a>
-              <a
-                href="#"
-                onClick={e => e.preventDefault()}
-                className={`${style.category} text-dark font-size-18`}
-              >
-                <span className="text-truncate">Testcase 5</span>
-              </a>
-              <a
-                href="#"
-                onClick={e => e.preventDefault()}
-                className={`${style.category} text-dark font-size-18`}
-              >
-                <span className="text-truncate">Testcase 6</span>
-              </a>
+              {availableTestObjects}
+              <Button className="text-truncate">New</Button>
             </div>
           </div>
         </div>
@@ -181,6 +173,7 @@ const AppsTestcaseManagement = () => {
                   </div>
                 </PerfectScrollbar>
               </div>
+              <br />
               <button
                 type="button"
                 className="btn btn-primary btn-with-addon text-nowrap"
@@ -212,4 +205,4 @@ const AppsTestcaseManagement = () => {
   )
 }
 
-export default AppsTestcaseManagement
+export default withRouter(connect(mapStateToProps)(AppsTestcaseManagement))

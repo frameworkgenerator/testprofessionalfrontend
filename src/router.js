@@ -114,8 +114,8 @@ const routes = [
     exact: true,
   },
   {
-    path: '/apps/workitem',
-    Component: lazy(() => import('pages/apps/implementations/workitem')),
+    path: '/apps/fields-management',
+    Component: lazy(() => import('pages/apps/implementations/fields-management')),
     exact: true,
   },
   {
@@ -124,23 +124,38 @@ const routes = [
     exact: true,
   },
   {
-    path: '/apps/testcase-magagement',
-    Component: lazy(() => import('pages/apps/implementations/testcase-magagement')),
+    path: '/apps/testCase-management',
+    Component: lazy(() => import('pages/apps/implementations/testcase-management')),
+    exact: true,
+  },
+  {
+    path: '/apps/testPlan-management',
+    Component: lazy(() => import('pages/apps/implementations/testplan-management')),
+    exact: true,
+  },
+  {
+    path: '/apps/tests-management',
+    Component: lazy(() => import('pages/apps/implementations/tests-management')),
+    exact: true,
+  },
+  {
+    path: '/apps/testSet-management',
+    Component: lazy(() => import('pages/apps/implementations/testset-management')),
     exact: true,
   },
   {
     path: '/apps/jira-dashboard',
-    Component: lazy(() => import('pages/apps/jira-dashboard')),
+    Component: lazy(() => import('pages/apps/implementations/jira-dashboard')),
     exact: true,
   },
   {
     path: '/apps/dataset-management',
     Component: lazy(() => import('pages/apps/implementations/dataset-management')),
-    exact: true,
+    exact: false,
   },
   {
-    path: '/apps/workitem',
-    Component: lazy(() => import('pages/apps/implementations/workitem')),
+    path: '/apps/fields-management',
+    Component: lazy(() => import('pages/apps/implementations/fields-management')),
     exact: true,
   },
   {

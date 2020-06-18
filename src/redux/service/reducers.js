@@ -3,8 +3,13 @@ import actions from './actions'
 const initialState = {
   dataSets: [],
   fields: [],
+  tests: [],
   dropDown: [],
   projects: [],
+  testPlans: [],
+  testSets: [],
+  testCases: [],
+  testSteps: [],
 }
 
 export default function userReducer(state = initialState, action) {
@@ -16,6 +21,16 @@ export default function userReducer(state = initialState, action) {
     case actions.GET_DROPDOWN:
       return { ...state, ...action.payload }
     case actions.GET_PROJECTS:
+      return { ...state, ...action.payload }
+    case actions.GET_TESTPLANS:
+      return { ...state, ...action.payload }
+    case actions.GET_TESTSETS:
+      return { ...state, ...action.payload }
+    case actions.GET_TESTCASES:
+      return { ...state, ...action.payload }
+    case actions.GET_TESTSTEPS:
+      return { ...state, ...action.payload }
+    case actions.GET_TESTS:
       return { ...state, ...action.payload }
     default:
       return state
