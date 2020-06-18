@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Layout } from 'antd'
-import { Link, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import classNames from 'classnames'
 import Sidebar from 'components/cleanui/layout/Sidebar'
 import SupportChat from 'components/cleanui/layout/SupportChat'
@@ -50,16 +50,10 @@ const AuthLayout = ({
           >
             <div className={style.logoContainer}>
               <div className={style.logo}>
-                <img src="resources/images/logo.svg" className="mr-2" alt="Clean UI" />
+                <img src="resources/images/logo.svg" className="mr-2" alt="Ventus Test Suite" />
                 <div className={style.name}>{logo}</div>
-                {logo === 'Clean UI Pro' && <div className={style.descr}>React</div>}
+                {logo === 'Ventus Test Suite' && <div className={style.descr}>React</div>}
               </div>
-            </div>
-            <div className="d-none d-sm-block">
-              <span className="mr-2">Don&#39;t have an account?</span>
-              <Link to="/auth/register" className="font-size-16 kit__utils__link">
-                Sign up
-              </Link>
             </div>
           </div>
           <div className={style.containerInner}>{children}</div>

@@ -2,8 +2,6 @@ FROM tiangolo/node-frontend:10 as builder
 RUN mkdir -p ~/app
 COPY . /app
 WORKDIR /app
-RUN npm install
-RUN npm run build
 
 FROM nginx:1.15 as production
 COPY --from=builder /app/build/ /usr/share/nginx/html

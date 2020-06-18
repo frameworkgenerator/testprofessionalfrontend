@@ -17,7 +17,8 @@ const mapStateToProps = ({ service }) => ({
 const AppsTestcaseManagement = props => {
   const { tests = [], testSteps = [] } = props
   const [testData] = useState(tests)
-  const [testStepData] = useState(testSteps)
+  const [testStepData, setTestStepData] = useState(testSteps)
+  const [count, setCount] = useState(0)
 
   const taskInput = React.createRef()
 
@@ -39,10 +40,25 @@ const AppsTestcaseManagement = props => {
 
   const addTask = e => {
     const task = e.target.value
+    const newData = {
+      key: count,
+      id: count,
+      teststepname: task,
+      description: `Description`,
+      position: 0,
+      requirement: 0,
+      testcaseId: 0,
+      testsetId: 0,
+      children: testDataToNameValue,
+    }
+    setTestStepData([...testData, newData])
+    setCount(count + 1)
 
     if (e.which === 13 && task !== '') {
       const treeDataProcessed = treeData.concat({
         name: task,
+        expanded: true,
+        children: testDataToNameValue,
       })
 
       setTreeData(treeDataProcessed)
@@ -182,7 +198,7 @@ const AppsTestcaseManagement = props => {
                 <span className="btn-addon">
                   <i className="btn-addon-icon fe fe-plus-circle" />
                 </span>
-                Add Step
+                + Add
               </button>
               <input
                 hidden={hideInput}

@@ -3,7 +3,6 @@ import { withRouter, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import NProgress from 'nprogress'
 import { Helmet } from 'react-helmet'
-// import Loader from 'components/cleanui/layout/Loader'
 import PublicLayout from './Public'
 import AuthLayout from './Auth'
 import MainLayout from './Main'
@@ -63,7 +62,7 @@ const Layout = ({ user, children, location: { pathname, search } }) => {
 
   return (
     <Fragment>
-      <Helmet titleTemplate="Clean UI Pro React | %s" title="React Admin Template" />
+      <Helmet titleTemplate="Ventus Test Suite | %s" title="Ventus Test Suite" />
       {BootstrappedLayout()}
     </Fragment>
   )

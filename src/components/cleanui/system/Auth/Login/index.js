@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Button, Form } from 'antd'
-import { Link } from 'react-router-dom'
 import style from '../style.module.scss'
 
 const mapStateToProps = ({ user, settings, dispatch }) => ({
@@ -59,12 +58,6 @@ const Login = ({ dispatch, user, logo }) => {
             <strong>Sign in</strong>
           </Button>
         </Form>
-      </div>
-      <div className="text-center pt-2 mb-auto">
-        <span className="mr-2">Don&#39;t have an account?</span>
-        <Link to="/auth/register" className="kit__utils__link font-size-16">
-          Sign up
-        </Link>
       </div>
     </div>
   )

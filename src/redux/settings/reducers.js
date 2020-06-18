@@ -13,7 +13,7 @@ const STORED_SETTINGS = storedSettings => {
 const initialState = {
   ...STORED_SETTINGS({
     authProvider: 'firebase',
-    logo: 'Testprofessional',
+    logo: 'Ventus Test Suite',
     locale: 'en-US',
     isSidebarOpen: false,
     isSupportChatOpen: false,
@@ -33,7 +33,7 @@ const initialState = {
     isGrayTopbar: false,
     isContentMaxWidth: false,
     isAppMaxWidth: false,
-    isGrayBackground: false,
+    isGrayBackground: true,
     isCardShadow: true,
     isSquaredBorders: false,
     isBorderless: false,

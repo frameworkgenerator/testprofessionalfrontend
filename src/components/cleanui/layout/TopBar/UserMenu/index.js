@@ -1,16 +1,14 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { FormattedMessage } from 'react-intl'
 import { connect } from 'react-redux'
-import { UserOutlined } from '@ant-design/icons'
 import { Menu, Dropdown, Avatar, Badge } from 'antd'
 import { history } from 'index'
 import styles from './style.module.scss'
 
-const mapStateToProps = ({ user }) => ({ user })
-
+const mapStateToProps = ({ user }) => ({
+  user,
+})
 const ProfileMenu = ({ dispatch, user }) => {
-  const [count, setCount] = useState(7)
-
   const logout = e => {
     e.preventDefault()
     dispatch({
@@ -19,15 +17,11 @@ const ProfileMenu = ({ dispatch, user }) => {
     history.push('/auth/login')
   }
 
-  const addCount = () => {
-    setCount(count + 1)
-  }
-
   const menu = (
     <Menu selectable={false}>
       <Menu.Item>
         <strong>
-          <FormattedMessage id="topBar.profileMenu.hello" />, {user.name || 'Anonymous'}
+          <FormattedMessage id="topBar.profileMenu.hello" />, {user.displayName || 'Anonymous'}
         </strong>
         <div>
           <strong className="mr-1">
@@ -73,10 +67,10 @@ const ProfileMenu = ({ dispatch, user }) => {
     </Menu>
   )
   return (
-    <Dropdown overlay={menu} trigger={['click']} onVisibleChange={addCount}>
+    <Dropdown overlay={menu}>
       <div className={styles.dropdown}>
-        <Badge count={count}>
-          <Avatar className={styles.avatar} shape="square" size="large" icon={<UserOutlined />} />
+        <Badge>
+          <Avatar className={styles.avatar} shape="square" size="large" src={user.avatar} />
         </Badge>
       </div>
     </Dropdown>

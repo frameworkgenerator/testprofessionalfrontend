@@ -6,7 +6,7 @@ const General10v1 = props => {
   return (
     <div className="d-flex flex-wrap flex-column align-items-center">
       <div className="kit__utils__avatar kit__utils__avatar--size64 mb-3">
-        <img src={photoURL} alt="Mary Stanform" />
+        <img src={photoURL} alt={displayName} />
       </div>
       <div className="text-center">
         <div className="text-dark font-weight-bold font-size-18">{displayName}</div>
