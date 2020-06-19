@@ -5,8 +5,7 @@ import { Helmet } from 'react-helmet'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import SortableTree, { changeNodeAtPath } from 'react-sortable-tree'
 import { SearchOutlined } from '@ant-design/icons'
-import { Input, Tooltip, Checkbox, Select, Button } from 'antd'
-import Table6 from 'components/kit/widgets/Tables/6'
+import { Input, Tooltip, Checkbox, Button } from 'antd'
 import style from './style.module.scss'
 
 const mapStateToProps = ({ service }) => ({
@@ -32,7 +31,6 @@ const AppsTestcaseManagement = props => {
 
   const [treeData, setTreeData] = useState(treeDataDefault)
   const [hideInput, setHideInput] = useState(true)
-  const { Option } = Select
 
   const toggleInput = () => {
     setHideInput(!hideInput)
@@ -151,12 +149,6 @@ const AppsTestcaseManagement = props => {
                 Testcase management
               </h6>
               <p className="mb-3">Welcome to testcasemanagement</p>
-              <div>
-                <Select placeholder="Select a option and change the tree data bellow">
-                  <Option value="male">DataSet 1</Option>
-                  <Option value="female">DataSet 2</Option>
-                </Select>
-              </div>
               <div className="height-400">
                 <PerfectScrollbar>
                   <div className="height-400">
@@ -208,11 +200,6 @@ const AppsTestcaseManagement = props => {
                 onKeyPress={e => addTask(e)}
                 ref={taskInput}
               />
-            </div>
-          </div>
-          <div className="card">
-            <div className="card-body">
-              <Table6 />
             </div>
           </div>
         </div>
