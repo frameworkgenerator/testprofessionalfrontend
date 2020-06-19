@@ -7,6 +7,8 @@ export default async function getTests() {
       expectedresult: 'string',
       fieldobjectId: 0,
       id: 0,
+      key: 0,
+      chosen: 1,
       objectaction: 'string',
       objectname: 'test Object A',
       objectselector: 'string',
@@ -20,6 +22,8 @@ export default async function getTests() {
     },
     {
       datasetId: 1,
+      key: 1,
+      chosen: 2,
       defaultvalue: 'string',
       description: 'string',
       expectedresult: 'string',

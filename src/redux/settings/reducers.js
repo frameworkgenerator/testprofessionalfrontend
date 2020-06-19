@@ -24,7 +24,7 @@ const initialState = {
     routerAnimation: 'slide-fadein-up', // none, slide-fadein-up, slide-fadein-right, fadein, zoom-fadein
     menuColor: 'dark', // white, dark, gray
     theme: 'dark', // default, dark
-    authPagesColor: 'gray', // white, gray, image
+    authPagesColor: 'image', // white, gray, image
     primaryColor: '#4b7cf3',
     leftMenuWidth: 256,
     isMenuUnfixed: false,
