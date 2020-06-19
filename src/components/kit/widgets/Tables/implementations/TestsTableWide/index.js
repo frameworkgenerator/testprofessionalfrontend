@@ -149,29 +149,6 @@ const TestsTableWide = props => {
         )
       },
     },
-    {
-      title: 'RESULT',
-      dataIndex: 'result',
-      width: '15%',
-      editable: true,
-      render: (_, record) => {
-        if (record.result === 'PASSED')
-          return (
-            <span>
-              <div title="failed" onConfirm={cancel} style={{ backgroundColor: '#229204' }}>
-                <a>{record.result}</a>
-              </div>
-            </span>
-          )
-        return (
-          <span>
-            <div title="failed" onConfirm={cancel} style={{ backgroundColor: '#FF0000' }}>
-              <a>{record.result}</a>
-            </div>
-          </span>
-        )
-      },
-    },
   ]
   const mergedColumns = columns.map(col => {
     if (!col.editable) {
@@ -209,7 +186,6 @@ const TestsTableWide = props => {
       objectselector: 'Selector',
       testStepId: 0,
       testvalue: `TestValue ${count}`,
-      result: `PASSED`,
     }
     setData([...data, newData])
     setCount(count + 1)
