@@ -23,10 +23,12 @@ export async function login() {
   const provider = new firebase.auth.GoogleAuthProvider()
   provider.addScope('profile')
   provider.addScope('email')
-
   return firebaseAuth
     .signInWithPopup(provider)
-    .then(() => true)
+    .then(function x(result) {
+      console.log(`Token: ${JSON.stringify(result)}`)
+      return true
+    })
     .catch(error =>
       notification.warning({
         message: error.code,
@@ -39,7 +41,20 @@ export async function currentAccount() {
   let userLoaded = false
   function getCurrentUser(auth) {
     return new Promise((resolve, reject) => {
+      console.log('Refresh user account')
       if (userLoaded) {
+        firebaseAuth
+          .auth()
+          .response.currentUser.getIdToken(/* forceRefresh */ true)
+          .then(function x(idToken) {
+            // Send token to your backend via HTTPS
+            // ...
+            console.log(idToken)
+          })
+          .catch(function y(error) {
+            // Handle error
+            console.log(error)
+          })
         resolve(firebaseAuth.currentUser)
       }
       const unsubscribe = auth.onAuthStateChanged(user => {
@@ -50,6 +65,37 @@ export async function currentAccount() {
     })
   }
   return getCurrentUser(firebaseAuth)
+}
+
+export async function getToken() {
+  let userLoaded = false
+  function getCurrentToken(auth) {
+    return new Promise((resolve, reject) => {
+      console.log('Refresh user account')
+      if (userLoaded) {
+        resolve(firebaseAuth.currentUser)
+        firebaseAuth
+          .auth()
+          .response.currentUser.getIdToken(/* forceRefresh */ true)
+          .then(function x(idToken) {
+            // Send token to your backend via HTTPS
+            // ...
+            console.log(idToken)
+          })
+          .catch(function y(error) {
+            // Handle error
+            console.log(error)
+          })
+        resolve(firebaseAuth.currentUser)
+      }
+      const unsubscribe = auth.onAuthStateChanged(user => {
+        userLoaded = true
+        unsubscribe()
+        resolve(user)
+      }, reject)
+    })
+  }
+  return getCurrentToken(firebaseAuth)
 }
 
 export async function logout() {

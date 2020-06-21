@@ -1,7 +1,7 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
 import { notification } from 'antd'
 import { history } from 'index'
-import { login, currentAccount, logout } from 'services/firebase.auth.service'
+import { login, currentAccount, logout, getToken } from 'services/firebase.auth.service'
 import actions from './actions'
 
 export function* LOGIN({ payload }) {
@@ -19,8 +19,8 @@ export function* LOGIN({ payload }) {
   if (success) {
     yield history.push('/')
     notification.success({
-      message: 'Logged In',
-      description: 'You have successfully logged in to Clean UI Pro React Admin Template!',
+      message: `Logged In`,
+      description: `${JSON.stringify(success)}`,
     })
   }
 }
@@ -32,6 +32,7 @@ export function* LOAD_CURRENT_ACCOUNT() {
       loading: true,
     },
   })
+
   const response = yield call(currentAccount)
   if (response) {
     const { uid: id, email, photoURL: avatar, displayName } = response
@@ -45,7 +46,31 @@ export function* LOAD_CURRENT_ACCOUNT() {
         role: 'admin',
         authorized: true,
         displayName,
-        token: response.access_token,
+      },
+    })
+  }
+  yield put({
+    type: 'user/SET_STATE',
+    payload: {
+      loading: false,
+    },
+  })
+}
+
+export function* TOKEN() {
+  yield put({
+    type: 'user/SET_STATE',
+    payload: {
+      loading: true,
+    },
+  })
+  const response = yield call(getToken)
+  if (response) {
+    const { token } = response
+    yield put({
+      type: 'user/TOKEN',
+      payload: {
+        token,
       },
     })
   }
@@ -69,6 +94,7 @@ export function* LOGOUT() {
       avatar: '',
       authorized: false,
       loading: false,
+      token: '',
     },
   })
 }
@@ -77,6 +103,7 @@ export default function* rootSaga() {
   yield all([
     takeEvery(actions.LOGIN, LOGIN),
     takeEvery(actions.LOAD_CURRENT_ACCOUNT, LOAD_CURRENT_ACCOUNT),
+    takeEvery(actions.TOKEN, TOKEN),
     takeEvery(actions.LOGOUT, LOGOUT),
     LOAD_CURRENT_ACCOUNT(), // run once on app load to check user auth
   ])

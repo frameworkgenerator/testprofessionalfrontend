@@ -15,7 +15,11 @@ const AppsProfile = ({ user }) => {
         <div className="col-xl-4 col-lg-12">
           <div className="card">
             <div className="card-body">
-              <General10v1 displayName={user.displayName} photoURL={user.avatar} />
+              <General10v1
+                displayName={user.displayName}
+                photoURL={user.avatar}
+                token={user.token}
+              />
             </div>
           </div>
         </div>

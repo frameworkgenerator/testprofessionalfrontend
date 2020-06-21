@@ -8,6 +8,7 @@ const initialState = {
   avatar: '',
   authorized: false,
   loading: false,
+  token: '',
 }
 
 export default function userReducer(state = initialState, action) {
