@@ -8,6 +8,7 @@ const actions = {
   GET_TESTCASES: 'service/GET_TESTCASES',
   GET_TESTSTEPS: 'service/GET_TESTSTEPS',
   GET_TESTS: 'service/GET_TESTS',
+  SET_PROJECTS: 'service/SET_PROJECTS',
 }
 
 export default actions

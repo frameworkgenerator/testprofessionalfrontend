@@ -32,6 +32,8 @@ export default function userReducer(state = initialState, action) {
       return { ...state, ...action.payload }
     case actions.GET_TESTS:
       return { ...state, ...action.payload }
+    case actions.SET_PROJECTS:
+      return { ...state, ...action.payload }
     default:
       return state
   }

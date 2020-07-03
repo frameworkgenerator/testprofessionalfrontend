@@ -4,8 +4,10 @@ import { Table, Input, InputNumber, Popconfirm, Form, Button } from 'antd'
 import { Redirect, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-const mapStateToProps = ({ service }) => ({
+const mapStateToProps = ({ service, user, dispatch }) => ({
   projects: service.projects,
+  dispatch,
+  user,
 })
 
 const EditableCell = ({
@@ -43,8 +45,7 @@ const EditableCell = ({
   )
 }
 
-const ProjectTableWide = props => {
-  const { projects = [] } = props
+const ProjectTableWide = ({ projects, dispatch, user }) => {
   const [form] = Form.useForm()
   const [data, setData] = useState(projects)
   const [userInput, setUserInput] = useState(false)
@@ -52,7 +53,7 @@ const ProjectTableWide = props => {
   const [getSelectedRowKeys, setSelectedRowKeys] = useState([])
   const [count, setCount] = useState(0)
 
-  const isEditing = record => record.key === editingKey
+  const isEditing = record => record.id === editingKey
 
   const edit = record => {
     form.setFieldsValue({
@@ -61,11 +62,19 @@ const ProjectTableWide = props => {
       lead: '',
       ...record,
     })
-    setEditingKey(record.key)
+    setEditingKey(record.id)
   }
 
-  const sessionStorageStoreDataSetId = key => {
-    sessionStorage.setItem('projectId', key)
+  const onFinish = () => {
+    console.log(JSON.stringify(...data))
+    dispatch({
+      type: 'service/SET_PROJECTS',
+      payload: [...data],
+    })
+  }
+
+  const sessionStorageStoreDataSetId = id => {
+    sessionStorage.setItem('projectId', id)
   }
 
   const openProject = () => {
@@ -86,11 +95,11 @@ const ProjectTableWide = props => {
     setEditingKey('')
   }
 
-  const save = async key => {
+  const save = async id => {
     try {
       const row = await form.validateFields()
       const newData = [...data]
-      const index = newData.findIndex(item => key === item.key)
+      const index = newData.findIndex(item => id === item.id)
 
       if (index > -1) {
         const item = newData[index]
@@ -113,8 +122,8 @@ const ProjectTableWide = props => {
 
   const columns = [
     {
-      title: 'NAME',
-      dataIndex: 'name',
+      title: 'PROJECT',
+      dataIndex: 'projectname',
       width: '25%',
       editable: true,
     },
@@ -139,9 +148,9 @@ const ProjectTableWide = props => {
         return editable ? (
           <span>
             <a
-              id={`Save_${record.key}`}
+              id={`Save_${record.id}`}
               href="javascript:;"
-              onClick={() => save(record.key)}
+              onClick={() => save(record.id)}
               style={{
                 marginRight: 8,
               }}
@@ -155,7 +164,7 @@ const ProjectTableWide = props => {
         ) : (
           <div>
             <Button
-              id={`Edit_${record.key}`}
+              id={`Edit_${record.id}`}
               disabled={editingKey !== ''}
               onClick={() => edit(record)}
             >
@@ -199,11 +208,9 @@ const ProjectTableWide = props => {
 
   const handleAdd = () => {
     const newData = {
-      key: count,
-      id: count,
       description: `Description ${count}`,
       lead: `Lead`,
-      name: `Name ${count}`,
+      projectname: `Name ${count}`,
     }
     setData([...data, newData])
     setCount(count + 1)
@@ -211,8 +218,8 @@ const ProjectTableWide = props => {
 
   const handleRemove = () => {
     const dataSource = [...data]
-    getSelectedRowKeys.forEach(function x(key) {
-      setData(dataSource.filter(item => item.key !== key))
+    getSelectedRowKeys.forEach(function x(id) {
+      setData(dataSource.filter(item => item.id !== id))
     })
   }
 
@@ -220,29 +227,51 @@ const ProjectTableWide = props => {
     setSelectedRowKeys,
     onChange: onSelectChange,
   }
+  // // const onFinishFailed = errorInfo => {
+  // //   console.log('Failed:', errorInfo)
+  // // }
 
   return (
     <div>
       <div className="mb-1">
-        <Button
-          onClick={handleAdd}
-          type="primary"
-          style={{
-            marginBottom: 16,
-          }}
-        >
-          + Add
-        </Button>
-        &nbsp;
-        <Button
+        <Form layout="horizontal" hideRequiredMark className="mb-1 form-inline">
+          <Button
+            type="primary"
+            onClick={onFinish}
+            style={{
+              marginBottom: 16,
+            }}
+            loading={user.loading}
+          >
+            Save
+          </Button>
+        </Form>
+        <Form layout="horizontal" hideRequiredMark onClick={handleAdd} className="mb-1 form-inline">
+          <Button
+            type="primary"
+            style={{
+              marginBottom: 16,
+            }}
+            loading={user.loading}
+          >
+            + Add
+          </Button>
+        </Form>
+        <Form
+          layout="horizontal"
+          hideRequiredMark
           onClick={handleRemove}
-          type="primary"
-          style={{
-            marginBottom: 16,
-          }}
+          className="mb-1 form-inline"
         >
-          - Remove
-        </Button>
+          <Button
+            type="primary"
+            style={{
+              marginBottom: 16,
+            }}
+          >
+            - Remove
+          </Button>
+        </Form>
       </div>
       {openProject()}
       <Form form={form} component={false}>
@@ -252,6 +281,7 @@ const ProjectTableWide = props => {
               cell: EditableCell,
             },
           }}
+          rowKey="id"
           bordered
           dataSource={data}
           columns={mergedColumns}

@@ -38,64 +38,20 @@ export async function login() {
 }
 
 export async function currentAccount() {
-  let userLoaded = false
   function getCurrentUser(auth) {
     return new Promise((resolve, reject) => {
-      console.log('Refresh user account')
-      if (userLoaded) {
-        firebaseAuth
-          .auth()
-          .response.currentUser.getIdToken(/* forceRefresh */ true)
-          .then(function x(idToken) {
-            // Send token to your backend via HTTPS
-            // ...
-            console.log(idToken)
-          })
-          .catch(function y(error) {
-            // Handle error
-            console.log(error)
-          })
-        resolve(firebaseAuth.currentUser)
-      }
       const unsubscribe = auth.onAuthStateChanged(user => {
-        userLoaded = true
+        if (user) {
+          user.getIdToken().then(function x(idToken) {
+            localStorage.setItem('token', idToken)
+          })
+        }
         unsubscribe()
         resolve(user)
       }, reject)
     })
   }
   return getCurrentUser(firebaseAuth)
-}
-
-export async function getToken() {
-  let userLoaded = false
-  function getCurrentToken(auth) {
-    return new Promise((resolve, reject) => {
-      console.log('Refresh user account')
-      if (userLoaded) {
-        resolve(firebaseAuth.currentUser)
-        firebaseAuth
-          .auth()
-          .response.currentUser.getIdToken(/* forceRefresh */ true)
-          .then(function x(idToken) {
-            // Send token to your backend via HTTPS
-            // ...
-            console.log(idToken)
-          })
-          .catch(function y(error) {
-            // Handle error
-            console.log(error)
-          })
-        resolve(firebaseAuth.currentUser)
-      }
-      const unsubscribe = auth.onAuthStateChanged(user => {
-        userLoaded = true
-        unsubscribe()
-        resolve(user)
-      }, reject)
-    })
-  }
-  return getCurrentToken(firebaseAuth)
 }
 
 export async function logout() {

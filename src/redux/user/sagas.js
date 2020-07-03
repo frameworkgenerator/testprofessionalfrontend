@@ -1,7 +1,7 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
 import { notification } from 'antd'
 import { history } from 'index'
-import { login, currentAccount, logout, getToken } from 'services/firebase.auth.service'
+import { login, currentAccount, logout } from 'services/firebase.auth.service'
 import actions from './actions'
 
 export function* LOGIN({ payload }) {
@@ -57,31 +57,6 @@ export function* LOAD_CURRENT_ACCOUNT() {
   })
 }
 
-export function* TOKEN() {
-  yield put({
-    type: 'user/SET_STATE',
-    payload: {
-      loading: true,
-    },
-  })
-  const response = yield call(getToken)
-  if (response) {
-    const { token } = response
-    yield put({
-      type: 'user/TOKEN',
-      payload: {
-        token,
-      },
-    })
-  }
-  yield put({
-    type: 'user/SET_STATE',
-    payload: {
-      loading: false,
-    },
-  })
-}
-
 export function* LOGOUT() {
   yield call(logout)
   yield put({
@@ -103,7 +78,6 @@ export default function* rootSaga() {
   yield all([
     takeEvery(actions.LOGIN, LOGIN),
     takeEvery(actions.LOAD_CURRENT_ACCOUNT, LOAD_CURRENT_ACCOUNT),
-    takeEvery(actions.TOKEN, TOKEN),
     takeEvery(actions.LOGOUT, LOGOUT),
     LOAD_CURRENT_ACCOUNT(), // run once on app load to check user auth
   ])

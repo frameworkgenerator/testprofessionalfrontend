@@ -1,13 +1,16 @@
-import { call, put, all } from 'redux-saga/effects'
+import { call, put, all, takeLeading } from 'redux-saga/effects'
+import { notification } from 'antd'
 import getFieldData from 'services/spring.boot.service.fields'
 import getDropDownData from 'services/spring.boot.service.dropdown'
 import getProjectData from 'services/spring.boot.service.projects'
 import getDataSetData from 'services/spring.boot.service.datasets'
+import setProjectData from 'services/spring.boot.service.setProjects'
 import getTestPlans from '../../services/spring.boot.service.testplans'
 import getTestSets from '../../services/spring.boot.service.testsets'
 import getTestCases from '../../services/spring.boot.service.testcases'
 import getTestSteps from '../../services/spring.boot.service.teststeps'
 import getTests from '../../services/spring.boot.service.tests'
+import actions from './actions'
 
 export function* GET_FIELDS() {
   const fields = yield call(getFieldData)
@@ -31,7 +34,7 @@ export function* GET_DROPDOWN() {
 export function* GET_DATASETS() {
   const dataSets = yield call(getDataSetData)
   yield put({
-    type: 'service/GET_PROJECTS',
+    type: 'service/GET_DATASETS',
     payload: {
       dataSets,
     },
@@ -44,6 +47,37 @@ export function* GET_PROJECTS() {
     type: 'service/GET_PROJECTS',
     payload: {
       projects,
+    },
+  })
+}
+export function* SET_PROJECTS(action) {
+  yield put({
+    type: 'user/SET_STATE',
+    payload: {
+      loading: true,
+    },
+  })
+  console.log('setting payload...')
+  console.log(JSON.stringify(action.payload))
+  const success = yield call(setProjectData, action.payload)
+  yield put({
+    type: 'service/SET_PROJECTS',
+  })
+  if (success) {
+    notification.success({
+      message: `Data loaded`,
+      description: `${JSON.stringify(action.payload)}`,
+    })
+  } else {
+    notification.error({
+      message: `Data Failed`,
+      description: `sorry`,
+    })
+  }
+  yield put({
+    type: 'user/SET_STATE',
+    payload: {
+      loading: false,
     },
   })
 }
@@ -109,5 +143,6 @@ export default function* rootSaga() {
     GET_TESTCASES(),
     GET_TESTSTEPS(),
     GET_TESTS(),
+    takeLeading(actions.SET_PROJECTS, SET_PROJECTS),
   ])
 }
