@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import 'antd/dist/antd.css'
-import { Table, Input, InputNumber, Popconfirm, Form, Button } from 'antd'
+import { Table, Input, InputNumber, Popconfirm, Form, Button, Tooltip, Space } from 'antd'
 import { Redirect, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { SaveOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons'
 
 const mapStateToProps = ({ service, user, dispatch }) => ({
   projects: service.projects,
@@ -48,9 +49,10 @@ const EditableCell = ({
 const ProjectTableWide = ({ projects, dispatch, user }) => {
   const [form] = Form.useForm()
   const [data, setData] = useState(projects)
-  const [userInput, setUserInput] = useState(false)
   const [editingKey, setEditingKey] = useState('')
   const [getSelectedRowKeys, setSelectedRowKeys] = useState([])
+  const [open, setOpen] = useState(false)
+  const [getChildKey, setChildKey] = useState(null)
   const [count, setCount] = useState(0)
 
   const isEditing = record => record.id === editingKey
@@ -66,24 +68,62 @@ const ProjectTableWide = ({ projects, dispatch, user }) => {
   }
 
   const onFinish = () => {
-    console.log(JSON.stringify(...data))
     dispatch({
       type: 'service/SET_PROJECTS',
       payload: [...data],
     })
   }
 
+  const resetApp = () => {
+    dispatch({
+      type: 'service/RESET_APP',
+    })
+  }
+
+  const onDelete = () => {
+    const removedObjects = []
+    getSelectedRowKeys.forEach(function getRowKeys(id) {
+      data
+        .filter(item => item.id === id)
+        .forEach(function y(obj) {
+          removedObjects.push(obj)
+        })
+    })
+    dispatch({
+      type: 'service/DELETE_PROJECTS',
+      payload: removedObjects,
+    })
+    updateDataBasedOnDeletions(removedObjects)
+  }
+
+  const updateDataBasedOnDeletions = removedObjects => {
+    console.log('start updating objects')
+    const newDataArray = []
+    removedObjects.forEach(function getObjectsFromArray(obj) {
+      data
+        .filter(item => item.id !== obj.id)
+        .forEach(function selectObjects(selectedObjectForRemoving) {
+          newDataArray.push(selectedObjectForRemoving)
+        })
+    })
+    setData(newDataArray)
+  }
+
   const sessionStorageStoreDataSetId = id => {
-    sessionStorage.setItem('projectId', id)
+    console.log('isEditing')
+    console.log(id)
+    console.log(getChildKey)
+    sessionStorage.setItem('dataSetId', getChildKey)
   }
 
   const openProject = () => {
-    if (userInput === true) {
+    if (open) {
+      sessionStorageStoreDataSetId(getChildKey)
       return (
         <Redirect
           to={{
             pathname: '/apps/dataset-management',
-            state: { datasetId: '123' },
+            state: { id: getChildKey },
           }}
         />
       )
@@ -172,8 +212,8 @@ const ProjectTableWide = ({ projects, dispatch, user }) => {
             </Button>
             <Button
               onClick={() => {
-                setUserInput(true)
-                sessionStorageStoreDataSetId(record.id)
+                setOpen(true)
+                setChildKey(record.id)
               }}
             >
               Open
@@ -207,70 +247,71 @@ const ProjectTableWide = ({ projects, dispatch, user }) => {
   }
 
   const handleAdd = () => {
-    const newData = {
+    const collectLatestId = [...data]
+    const saveIdToArray = []
+    collectLatestId.forEach(function iterateOverDataObjects(obj) {
+      saveIdToArray.push(obj.id)
+    })
+    const getHighestIdPlusOne = Math.max(...saveIdToArray) + 1
+    const createNewObject = {
+      id: getHighestIdPlusOne,
       description: `Description ${count}`,
       lead: `Lead`,
       projectname: `Name ${count}`,
     }
-    setData([...data, newData])
+    setData([...data, createNewObject])
     setCount(count + 1)
-  }
-
-  const handleRemove = () => {
-    const dataSource = [...data]
-    getSelectedRowKeys.forEach(function x(id) {
-      setData(dataSource.filter(item => item.id !== id))
-    })
   }
 
   const rowSelection = {
     setSelectedRowKeys,
     onChange: onSelectChange,
   }
-  // // const onFinishFailed = errorInfo => {
-  // //   console.log('Failed:', errorInfo)
-  // // }
 
   return (
     <div>
       <div className="mb-1">
         <Form layout="horizontal" hideRequiredMark className="mb-1 form-inline">
-          <Button
-            type="primary"
-            onClick={onFinish}
-            style={{
-              marginBottom: 16,
-            }}
-            loading={user.loading}
-          >
-            Save
-          </Button>
-        </Form>
-        <Form layout="horizontal" hideRequiredMark onClick={handleAdd} className="mb-1 form-inline">
-          <Button
-            type="primary"
-            style={{
-              marginBottom: 16,
-            }}
-            loading={user.loading}
-          >
-            + Add
-          </Button>
-        </Form>
-        <Form
-          layout="horizontal"
-          hideRequiredMark
-          onClick={handleRemove}
-          className="mb-1 form-inline"
-        >
-          <Button
-            type="primary"
-            style={{
-              marginBottom: 16,
-            }}
-          >
-            - Remove
-          </Button>
+          <div className="site-button-ghost-wrapper">
+            <Space>
+              <Button
+                type="primary"
+                shape="block"
+                onClick={resetApp}
+                loading={user.loading}
+                icon={<SaveOutlined />}
+              />
+              <Tooltip title="save">
+                <Button
+                  type="primary"
+                  shape="block"
+                  onClick={onFinish}
+                  loading={user.loading}
+                  icon={<SaveOutlined />}
+                />
+              </Tooltip>
+              <Tooltip title="add row">
+                <Button
+                  type="primary"
+                  shape="block"
+                  onClick={handleAdd}
+                  loading={user.loading}
+                  icon={<PlusOutlined />}
+                />
+              </Tooltip>
+              <Tooltip title="remove row">
+                <Button
+                  type="primary"
+                  shape="block"
+                  onClick={onDelete}
+                  loading={user.loading}
+                  icon={<DeleteOutlined />}
+                />
+              </Tooltip>
+            </Space>
+            <br />
+            <br />
+          </div>
         </Form>
       </div>
       {openProject()}

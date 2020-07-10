@@ -3,7 +3,7 @@ import { notification } from 'antd'
 import getFieldData from 'services/spring.boot.service.fields'
 import getDropDownData from 'services/spring.boot.service.dropdown'
 import getProjectData from 'services/spring.boot.service.projects'
-import getDataSetData from 'services/spring.boot.service.datasets'
+import deleteProjectData from 'services/spring.boot.service.deleteProjects'
 import setProjectData from 'services/spring.boot.service.setProjects'
 import getTestPlans from '../../services/spring.boot.service.testplans'
 import getTestSets from '../../services/spring.boot.service.testsets'
@@ -31,25 +31,56 @@ export function* GET_DROPDOWN() {
   })
 }
 
-export function* GET_DATASETS() {
-  const dataSets = yield call(getDataSetData)
+export function* RESET_APP() {
   yield put({
-    type: 'service/GET_DATASETS',
-    payload: {
-      dataSets,
-    },
+    type: 'service/RESET_APP',
   })
 }
 
 export function* GET_PROJECTS() {
   const projects = yield call(getProjectData)
   yield put({
-    type: 'service/GET_PROJECTS',
+    type: 'user/SET_STATE',
     payload: {
-      projects,
+      loading: true,
+    },
+  })
+  if (projects) {
+    yield put({
+      type: 'service/GET_PROJECTS',
+      payload: {
+        projects,
+      },
+    })
+  }
+  yield put({
+    type: 'user/SET_STATE',
+    payload: {
+      loading: false,
     },
   })
 }
+
+export function* DELETE_PROJECTS(action) {
+  yield put({
+    type: 'user/SET_STATE',
+    payload: {
+      loading: true,
+    },
+  })
+  console.log(JSON.stringify(action.payload))
+  yield call(deleteProjectData, action.payload)
+  yield put({
+    type: 'service/DELETE_PROJECTS',
+  })
+  yield put({
+    type: 'user/SET_STATE',
+    payload: {
+      loading: false,
+    },
+  })
+}
+
 export function* SET_PROJECTS(action) {
   yield put({
     type: 'user/SET_STATE',
@@ -134,7 +165,6 @@ export function* GET_TESTS() {
 
 export default function* rootSaga() {
   yield all([
-    GET_DATASETS(),
     GET_FIELDS(), // run once on app load to fetch menu data
     GET_DROPDOWN(),
     GET_PROJECTS(),
@@ -143,6 +173,8 @@ export default function* rootSaga() {
     GET_TESTCASES(),
     GET_TESTSTEPS(),
     GET_TESTS(),
-    takeLeading(actions.SET_PROJECTS, SET_PROJECTS),
+    takeLeading(actions.RESET_APP, RESET_APP()),
+    takeLeading(actions.DELETE_PROJECTS, DELETE_PROJECTS()),
+    takeLeading(actions.SET_PROJECTS, SET_PROJECTS()),
   ])
 }

@@ -32,6 +32,11 @@ export default async function getMenuData() {
           key: 'dashboard',
           url: '/dashboard/projects',
         },
+        {
+          title: 'DataSet',
+          key: 'dataset',
+          url: '/dashboard/dataset',
+        },
       ],
     },
     {

@@ -1,7 +1,6 @@
 import actions from './actions'
 
 const initialState = {
-  dataSets: [],
   fields: [],
   tests: [],
   dropDown: [],
@@ -10,12 +9,11 @@ const initialState = {
   testSets: [],
   testCases: [],
   testSteps: [],
+  projectsWaitingForDeletion: [],
 }
 
 export default function userReducer(state = initialState, action) {
   switch (action.type) {
-    case actions.GET_DATASETS:
-      return { ...state, ...action.payload }
     case actions.GET_FIELDS:
       return { ...state, ...action.payload }
     case actions.GET_DROPDOWN:
@@ -33,6 +31,8 @@ export default function userReducer(state = initialState, action) {
     case actions.GET_TESTS:
       return { ...state, ...action.payload }
     case actions.SET_PROJECTS:
+      return { ...state, ...action.payload }
+    case actions.DELETE_PROJECTS:
       return { ...state, ...action.payload }
     default:
       return state

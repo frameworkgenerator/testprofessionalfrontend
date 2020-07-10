@@ -14,6 +14,11 @@ const routes = [
     exact: true,
   },
   {
+    path: '/dashboard/dataset',
+    Component: lazy(() => import('pages/dashboard/dataset')),
+    exact: true,
+  },
+  {
     path: '/dashboard/beta',
     Component: lazy(() => import('pages/dashboard/beta')),
     exact: true,

@@ -7,7 +7,6 @@ import TopBar from 'components/cleanui/layout/TopBar'
 import Breadcrumbs from 'components/cleanui/layout/Breadcrumbs'
 import Menu from 'components/cleanui/layout/Menu'
 import Footer from 'components/cleanui/layout/Footer'
-import Sidebar from 'components/cleanui/layout/Sidebar'
 import SupportChat from 'components/cleanui/layout/SupportChat'
 
 const mapStateToProps = ({ settings }) => ({
@@ -44,7 +43,6 @@ const MainLayout = ({
           cui__layout__borderless: isBorderless,
         })}
       >
-        <Sidebar />
         <SupportChat />
         <Menu />
         <Layout>

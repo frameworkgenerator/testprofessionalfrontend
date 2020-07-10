@@ -18,8 +18,12 @@ const firebaseConfig = {
 const firebaseApp = firebase.initializeApp(firebaseConfig)
 const firebaseAuth = firebase.auth()
 export default firebaseApp
+const environment = ''
 
 export async function login() {
+  if (environment === 'stub') {
+    return true
+  }
   const provider = new firebase.auth.GoogleAuthProvider()
   provider.addScope('profile')
   provider.addScope('email')
@@ -38,12 +42,15 @@ export async function login() {
 }
 
 export async function currentAccount() {
+  if (environment === 'stub') {
+    return true
+  }
   function getCurrentUser(auth) {
     return new Promise((resolve, reject) => {
       const unsubscribe = auth.onAuthStateChanged(user => {
         if (user) {
           user.getIdToken().then(function x(idToken) {
-            localStorage.setItem('token', idToken)
+            sessionStorage.setItem('token', idToken)
           })
         }
         unsubscribe()
@@ -55,5 +62,8 @@ export async function currentAccount() {
 }
 
 export async function logout() {
+  if (environment === 'stub') {
+    return true
+  }
   return firebaseAuth.signOut().then(() => true)
 }

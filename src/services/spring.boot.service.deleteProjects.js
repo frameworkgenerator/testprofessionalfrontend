@@ -1,9 +1,9 @@
 import { notification } from 'antd'
 
-export default async function setProjectData(data) {
-  console.log('try to set project')
+export default async function deleteProjectData(data) {
+  console.log('Delete call:')
   console.log(JSON.stringify(data))
-  const result = await fetch('http://localhost:9009/v1/project/update', {
+  const result = await fetch('http://localhost:9009/v1/project/deleteall', {
     method: 'POST',
     headers: {
       mode: 'cors',
