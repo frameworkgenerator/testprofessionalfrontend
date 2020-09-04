@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Table } from 'antd'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -48,14 +48,18 @@ const columns = [
     },
   },
 ]
+const DevelopersTableSmall = ({ fields }) => {
+  const [data, setData] = useState(fields)
 
-const DevelopersTableSmall = props => {
-  const { fields = [] } = props
+  useEffect(() => {
+    setData(fields)
+  }, [fields])
+  console.log(data)
 
   return (
     <div>
       <div className="mb-4">
-        <Table className={style.table} columns={columns} dataSource={fields} pagination={false} />
+        <Table className={style.table} columns={columns} dataSource={data} pagination={false} />
       </div>
     </div>
   )

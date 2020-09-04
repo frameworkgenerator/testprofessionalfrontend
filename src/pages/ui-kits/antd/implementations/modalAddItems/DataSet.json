@@ -1,0 +1,18 @@
+{
+  "id": 1,
+  "projectId": 0,
+  "name": "string",
+  "description": "string",
+  "path": "string",
+  "selector": "string",
+  "type": "string",
+  "datasetcontext": {
+    "id": 1,
+    "position": 0,
+    "owner": "string",
+    "status": "string",
+    "selected": true,
+    "flag": true,
+    "blocked": true
+  }
+}

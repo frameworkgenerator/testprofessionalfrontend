@@ -1,18 +1,23 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { ReactSortable } from 'react-sortablejs'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Button } from 'antd'
 import WorkItemModal from '../../../ui-kits/antd/implementations/modal'
+import AddItems from '../../../ui-kits/antd/implementations/modalAddItems'
 import style from './style.module.scss'
 
 const mapStateToProps = ({ service }) => ({
-  projects: service.projects,
+  dataSets: service.dataSets,
 })
 
-const ExtraAppsJiraAgileBoard = ({ projects }) => {
-  const [data, setData] = useState(projects)
+const DataSets = ({ dataSets }) => {
+  const [data, setData] = useState(dataSets)
+
+  useEffect(() => {
+    setData(dataSets)
+  }, [dataSets])
+  console.log(JSON.stringify(data))
 
   const agileItems = {
     name: 'Button',
@@ -21,128 +26,14 @@ const ExtraAppsJiraAgileBoard = ({ projects }) => {
     component: <WorkItemModal datasetId={1} />,
   }
 
-  const dataSetObject = {
-    id: 1,
-    projectname: 'string',
-    description: 'string',
-    lead: 'string',
-    dataset: [
-      {
-        datasetcontext: {
-          blocked: true,
-          flag: true,
-          owner: 'string',
-          position: 0,
-          selected: true,
-          status: 'BACKLOG',
-        },
-        name: 'string',
-        path: 'string',
-        projectId: 0,
-        selector: 'string',
-        type: 'string',
-        id: 1,
-      },
-    ],
+  const buttonAddItems = {
+    name: 'Button',
+    description: 'To trigger an operation.',
+    link: 'https://ant.design/components/button/',
+    component: <AddItems datasetId={1} />,
   }
 
-  const add = () => {
-    setData([...data, dataSetObject])
-    console.log(JSON.stringify(data))
-  }
-
-  const [backlogItems, setBacklogItems] = useState(
-    data
-      .find(r => r.id === 1)
-      .dataset.map(item => {
-        console.log(item)
-        if (item.datasetcontext.status === 'BACKLOG') {
-          return (
-            <div className={style.card} key={item.id}>
-              <div className={style.content}>
-                <div className={`${style.flag} bg-primary`} />
-                <div className="d-flex flex-wrap-reverse align-items-center">
-                  <h5 className="text-dark font-size-18 mt-2 mr-auto">{item.name}</h5>
-                  <h5 className="text-dark font-size-8 mt-2 mr-auto">ID: {item.id}</h5>
-                </div>
-                <div className="text-gray-5 mb-2">Description: {item.description}</div>
-                <div>{agileItems.component}</div>
-              </div>
-            </div>
-          )
-        }
-        return <div>nothing found</div>
-      }),
-  )
-
-  const [todoItems, setTodoItems] = useState(
-    data
-      .find(r => r.id === 1)
-      .dataset.map(item => {
-        console.log(item)
-        if (item.datasetcontext.status === 'TODO') {
-          return (
-            <div className={style.card} key={item.id}>
-              <div className={style.content}>
-                <div className={`${style.flag} bg-primary`} />
-                <div className="d-flex flex-wrap-reverse align-items-center">
-                  <h5 className="text-dark font-size-18 mt-2 mr-auto">{item.name}</h5>
-                  <h5 className="text-dark font-size-8 mt-2 mr-auto">ID: {item.id}</h5>
-                </div>
-                <div className="text-gray-5 mb-2">Description: {item.description}</div>
-              </div>
-            </div>
-          )
-        }
-        return <div>nothing found</div>
-      }),
-  )
-
-  const [inprogressItems, setInprogressItems] = useState(
-    data
-      .find(r => r.id === 1)
-      .dataset.map(item => {
-        console.log(item)
-        if (item.datasetcontext.status === 'INPROGRESS') {
-          return (
-            <div className={style.card} key={item.id}>
-              <div className={style.content}>
-                <div className={`${style.flag} bg-primary`} />
-                <div className="d-flex flex-wrap-reverse align-items-center">
-                  <h5 className="text-dark font-size-18 mt-2 mr-auto">{item.name}</h5>
-                  <h5 className="text-dark font-size-8 mt-2 mr-auto">ID: {item.id}</h5>
-                </div>
-                <div className="text-gray-5 mb-2">Description: {item.description}</div>
-              </div>
-            </div>
-          )
-        }
-        return <div>nothing found</div>
-      }),
-  )
-
-  const [completed, setCompleted] = useState(
-    data
-      .find(r => r.id === 1)
-      .dataset.map(item => {
-        console.log(item)
-        if (item.datasetcontext.status === 'COMPLETED') {
-          return (
-            <div className={style.card} key={item.id}>
-              <div className={style.content}>
-                <div className={`${style.flag} bg-primary`} />
-                <div className="d-flex flex-wrap-reverse align-items-center">
-                  <h5 className="text-dark font-size-18 mt-2 mr-auto">{item.name}</h5>
-                  <h5 className="text-dark font-size-8 mt-2 mr-auto">ID: {item.id}</h5>
-                </div>
-                <div className="text-gray-5 mb-2">Description: {item.description}</div>
-              </div>
-            </div>
-          )
-        }
-        return <div>nothing found</div>
-      }),
-  )
+  console.log(data)
 
   const update = async event => {
     const getIdFromTitle = event.item.innerText.split('ID: ')[1].split('Description')[0]
@@ -155,9 +46,7 @@ const ExtraAppsJiraAgileBoard = ({ projects }) => {
         <Helmet title="Jira Agile Board" />
         <div className="d-flex align-items-center mb-4">
           <div className="kit__utils__avatarGroup mr-4 flex-shrink-0" />
-          <Button onClick={() => add()} type="primary" className="mb-1 mr-1">
-            + Add
-          </Button>
+          <div>{buttonAddItems.component}</div>
         </div>
         <div className="row">
           <div className="col-lg-3 col-md-6">
@@ -166,12 +55,31 @@ const ExtraAppsJiraAgileBoard = ({ projects }) => {
               <ReactSortable
                 group="issues"
                 style={{ minHeight: 500 }}
-                list={backlogItems}
-                setList={setBacklogItems}
                 key="id"
                 onChange={item => update(item)}
               >
-                {backlogItems.map(item => item)}
+                {Array.isArray(data) && data.length ? (
+                  data.map(item => {
+                    if (item.datasetcontext.status === 'string') {
+                      return (
+                        <div className={style.card} key={item.id}>
+                          <div className={style.content}>
+                            <div className={`${style.flag} bg-primary`} />
+                            <div className="d-flex flex-wrap-reverse align-items-center">
+                              <h5 className="text-dark font-size-18 mt-2 mr-auto">{item.name}</h5>
+                              <h5 className="text-dark font-size-8 mt-2 mr-auto">ID: {item.id}</h5>
+                            </div>
+                            <div className="text-gray-5 mb-2">Description: {item.description}</div>
+                            <div>{agileItems.component}</div>
+                          </div>
+                        </div>
+                      )
+                    }
+                    return <div>nothing found</div>
+                  })
+                ) : (
+                  <div>Loading...</div>
+                )}
               </ReactSortable>
             </div>
           </div>
@@ -181,12 +89,32 @@ const ExtraAppsJiraAgileBoard = ({ projects }) => {
               <ReactSortable
                 group="issues"
                 style={{ minHeight: 500 }}
-                list={todoItems}
-                setList={setTodoItems}
                 key="id"
                 onChange={item => update(item)}
               >
-                {todoItems.map(item => item)}
+                {Array.isArray(data) && data.length ? (
+                  data.map(item => {
+                    console.log(item)
+                    if (item.datasetcontext.status === 'string') {
+                      return (
+                        <div className={style.card} key={item.id}>
+                          <div className={style.content}>
+                            <div className={`${style.flag} bg-primary`} />
+                            <div className="d-flex flex-wrap-reverse align-items-center">
+                              <h5 className="text-dark font-size-18 mt-2 mr-auto">{item.name}</h5>
+                              <h5 className="text-dark font-size-8 mt-2 mr-auto">ID: {item.id}</h5>
+                            </div>
+                            <div className="text-gray-5 mb-2">Description: {item.description}</div>
+                            <div>{agileItems.component}</div>
+                          </div>
+                        </div>
+                      )
+                    }
+                    return <div>nothing found</div>
+                  })
+                ) : (
+                  <div>Loading...</div>
+                )}
               </ReactSortable>
             </div>
           </div>
@@ -196,12 +124,31 @@ const ExtraAppsJiraAgileBoard = ({ projects }) => {
               <ReactSortable
                 group="issues"
                 style={{ minHeight: 500 }}
-                list={inprogressItems}
-                setList={setInprogressItems}
                 key="id"
                 onChange={item => update(item)}
               >
-                {inprogressItems.map(item => item)}
+                {Array.isArray(data) && data.length ? (
+                  data.map(item => {
+                    console.log(item)
+                    if (item.datasetcontext.status === 'INPROGRESS') {
+                      return (
+                        <div className={style.card} key={item.id}>
+                          <div className={style.content}>
+                            <div className={`${style.flag} bg-primary`} />
+                            <div className="d-flex flex-wrap-reverse align-items-center">
+                              <h5 className="text-dark font-size-18 mt-2 mr-auto">{item.name}</h5>
+                              <h5 className="text-dark font-size-8 mt-2 mr-auto">ID: {item.id}</h5>
+                            </div>
+                            <div className="text-gray-5 mb-2">Description: {item.description}</div>
+                          </div>
+                        </div>
+                      )
+                    }
+                    return <div>nothing found</div>
+                  })
+                ) : (
+                  <div>Loading...</div>
+                )}
               </ReactSortable>
             </div>
           </div>
@@ -211,12 +158,31 @@ const ExtraAppsJiraAgileBoard = ({ projects }) => {
               <ReactSortable
                 group="issues"
                 style={{ minHeight: 500 }}
-                list={completed}
-                setList={setCompleted}
                 onChange={item => update(item)}
                 key="id"
               >
-                {completed.map(item => item)}
+                {Array.isArray(data) && data.length ? (
+                  data.map(item => {
+                    console.log(item)
+                    if (item.datasetcontext.status === 'COMPLETED') {
+                      return (
+                        <div className={style.card} key={item.id}>
+                          <div className={style.content}>
+                            <div className={`${style.flag} bg-primary`} />
+                            <div className="d-flex flex-wrap-reverse align-items-center">
+                              <h5 className="text-dark font-size-18 mt-2 mr-auto">{item.name}</h5>
+                              <h5 className="text-dark font-size-8 mt-2 mr-auto">ID: {item.id}</h5>
+                            </div>
+                            <div className="text-gray-5 mb-2">Description: {item.description}</div>
+                          </div>
+                        </div>
+                      )
+                    }
+                    return <div>nothing found</div>
+                  })
+                ) : (
+                  <div>Loading...</div>
+                )}
               </ReactSortable>
             </div>
           </div>
@@ -228,4 +194,4 @@ const ExtraAppsJiraAgileBoard = ({ projects }) => {
   return <div>{componentContent()}</div>
 }
 
-export default withRouter(connect(mapStateToProps)(ExtraAppsJiraAgileBoard))
+export default withRouter(connect(mapStateToProps)(DataSets))

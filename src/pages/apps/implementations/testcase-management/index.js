@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { withRouter, useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
@@ -11,12 +11,27 @@ import style from './style.module.scss'
 const mapStateToProps = ({ service }) => ({
   tests: service.tests,
   testSteps: service.testSteps,
+  testCases: service.testCases,
 })
 
-const AppsTestcaseManagement = props => {
-  const { tests = [], testSteps = [] } = props
-  const [testData] = useState(tests)
-  const [testStepData, setTestStepData] = useState(testSteps)
+const AppsTestcaseManagement = ({ tests, testSteps, testCases }) => {
+  const [getTests, setTests] = useState(tests)
+  const [getTestSteps, setTestSteps] = useState(testSteps)
+  const [getTestCases, setTestCases] = useState(testCases)
+
+  useEffect(() => {
+    setTests(getTests)
+  }, [getTests])
+  console.log(getTests)
+  useEffect(() => {
+    setTestSteps(getTestSteps)
+  }, [getTestSteps])
+  console.log(getTestSteps)
+  useEffect(() => {
+    setTestCases(getTestCases)
+  }, [getTestCases])
+  console.log(getTestCases)
+
   const [count, setCount] = useState(0)
   const [, setMockData] = useState([])
   const [targetKeys, setTargetKeys] = useState([])
@@ -24,12 +39,12 @@ const AppsTestcaseManagement = props => {
 
   const taskInput = React.createRef()
 
-  const testDataToNameValue = testData.map(number => {
+  const testDataToNameValue = getTests.map(number => {
     return { name: number.objectname }
   })
 
-  const treeDataDefault = testStepData.map(number => {
-    return { name: number.teststepname, expanded: true, children: testDataToNameValue }
+  const treeDataDefault = getTestSteps.map(number => {
+    return { name: number.testcasename, expanded: true, children: number.teststep }
   })
 
   const [treeData, setTreeData] = useState(treeDataDefault)
@@ -52,7 +67,7 @@ const AppsTestcaseManagement = props => {
       testsetId: 0,
       children: testDataToNameValue,
     }
-    setTestStepData([...testData, newData])
+    setTestSteps([...testSteps, newData])
     setCount(count + 1)
 
     if (e.which === 13 && task !== '') {
@@ -79,7 +94,7 @@ const AppsTestcaseManagement = props => {
   const history = useHistory()
 
   const [availableTestObjects] = useState(
-    tests.map(item => {
+    getTests.map(item => {
       return (
         <Button
           onClick={e => {
@@ -167,7 +182,7 @@ const AppsTestcaseManagement = props => {
                     onCancel={handleCancelModal}
                   >
                     <Transfer
-                      dataSource={testData}
+                      dataSource={getTestCases}
                       showSearch
                       filterOption={filterOption}
                       targetKeys={targetKeys}
@@ -242,6 +257,7 @@ const AppsTestcaseManagement = props => {
                     />
                     <br />
                     <SortableTree
+                      rowKey="id"
                       treeData={treeData}
                       onChange={tree => setTreeData(tree)}
                       generateNodeProps={({ node, path }) => ({

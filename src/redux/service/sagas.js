@@ -2,14 +2,15 @@ import { call, put, all, takeLeading } from 'redux-saga/effects'
 import { notification } from 'antd'
 import getFieldData from 'services/spring.boot.service.fields'
 import getDropDownData from 'services/spring.boot.service.dropdown'
-import getProjectData from 'services/spring.boot.service.projects'
+import getProjectData from 'services/spring.boot.service.projects.get'
 import deleteProjectData from 'services/spring.boot.service.deleteProjects'
-import setProjectData from 'services/spring.boot.service.setProjects'
+import setProjectData from 'services/spring.boot.service.projects.set'
 import getTestPlans from '../../services/spring.boot.service.testplans'
 import getTestSets from '../../services/spring.boot.service.testsets'
 import getTestCases from '../../services/spring.boot.service.testcases'
 import getTestSteps from '../../services/spring.boot.service.teststeps'
 import getTests from '../../services/spring.boot.service.tests'
+import getDataSetData from '../../services/spring.boot.service.datasets'
 import actions from './actions'
 
 export function* GET_FIELDS() {
@@ -21,6 +22,7 @@ export function* GET_FIELDS() {
     },
   })
 }
+
 export function* GET_DROPDOWN() {
   const dropDown = yield call(getDropDownData)
   yield put({
@@ -50,6 +52,30 @@ export function* GET_PROJECTS() {
       type: 'service/GET_PROJECTS',
       payload: {
         projects,
+      },
+    })
+  }
+  yield put({
+    type: 'user/SET_STATE',
+    payload: {
+      loading: false,
+    },
+  })
+}
+
+export function* GET_DATASETS() {
+  const dataSets = yield call(getDataSetData)
+  yield put({
+    type: 'user/SET_STATE',
+    payload: {
+      loading: true,
+    },
+  })
+  if (dataSets) {
+    yield put({
+      type: 'service/GET_DATASETS',
+      payload: {
+        dataSets,
       },
     })
   }
@@ -96,8 +122,14 @@ export function* SET_PROJECTS(action) {
   })
   if (success) {
     notification.success({
-      message: `Data loaded`,
-      description: `${JSON.stringify(action.payload)}`,
+      message: `Data Saved`,
+      description: `${JSON.stringify(action.payload.map(item => item.projectname))}`,
+    })
+    yield put({
+      type: 'user/SET_STATE',
+      payload: {
+        loading: false,
+      },
     })
   } else {
     notification.error({
@@ -165,6 +197,8 @@ export function* GET_TESTS() {
 
 export default function* rootSaga() {
   yield all([
+    takeLeading(actions.SET_PROJECTS, SET_PROJECTS),
+    takeLeading(actions.DELETE_PROJECTS, DELETE_PROJECTS),
     GET_FIELDS(), // run once on app load to fetch menu data
     GET_DROPDOWN(),
     GET_PROJECTS(),
@@ -173,8 +207,6 @@ export default function* rootSaga() {
     GET_TESTCASES(),
     GET_TESTSTEPS(),
     GET_TESTS(),
-    takeLeading(actions.RESET_APP, RESET_APP()),
-    takeLeading(actions.DELETE_PROJECTS, DELETE_PROJECTS()),
-    takeLeading(actions.SET_PROJECTS, SET_PROJECTS()),
+    GET_DATASETS(),
   ])
 }

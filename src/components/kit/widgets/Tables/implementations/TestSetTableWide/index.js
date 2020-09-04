@@ -242,6 +242,7 @@ const TestSetTableWide = props => {
               cell: EditableCell,
             },
           }}
+          rowKey="id"
           bordered
           dataSource={data}
           columns={mergedColumns}

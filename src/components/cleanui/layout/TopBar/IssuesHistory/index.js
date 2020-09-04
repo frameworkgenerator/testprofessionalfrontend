@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { FormattedMessage } from 'react-intl'
 import { Menu, Dropdown } from 'antd'
@@ -11,17 +11,23 @@ const mapStateToProps = ({ service }) => ({
 
 const IssuesHistory = props => {
   const { testCases = [] } = props
-  const [data] = useState(testCases)
+  const [data, setData] = useState(testCases)
+
+  useEffect(() => {
+    setData(testCases)
+  }, [testCases])
 
   const [testCaseItems] = useState(
     data.map(item => {
-      return (
-        <Menu.Item key={item.id}>
-          <Link to="/apps/testCase-management">
-            <i className="fe fe-check-circle mr-2" /> {item.testcasename}
-          </Link>
-        </Menu.Item>
-      )
+      if (item)
+        return (
+          <Menu.Item key={item.id}>
+            <Link to="/apps/testCase-management">
+              <i className="fe fe-check-circle mr-2" /> {item.testcasename}
+            </Link>
+          </Menu.Item>
+        )
+      return <div>empty</div>
     }),
   )
 

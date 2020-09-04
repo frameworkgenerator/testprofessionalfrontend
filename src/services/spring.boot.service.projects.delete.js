@@ -1,18 +1,23 @@
 import { notification } from 'antd'
 
-export default async function getProjectData() {
-  const response = await fetch('http://localhost:9009/v1/project/getall', {
+export default async function setProjectData(data) {
+  console.log('try to set project')
+  console.log(JSON.stringify(data))
+  const result = await fetch('http://localhost:9009/v1/project/deleteall', {
+    method: 'POST',
     headers: {
       mode: 'cors',
       Accept: 'application/json',
       'Content-Type': 'application/json',
       Authorization: `Bearer ${sessionStorage.getItem('token')}`,
     },
+    body: JSON.stringify(data),
   }).catch(error =>
     notification.warning({
       message: error.code,
       description: error.message,
     }),
   )
-  return response.json()
+  console.log(result)
+  return result
 }

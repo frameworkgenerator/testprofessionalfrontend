@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import 'antd/dist/antd.css'
 import { Table, Input, InputNumber, Popconfirm, Form, Button, Select } from 'antd'
 import { withRouter } from 'react-router-dom'
@@ -54,6 +54,11 @@ const DevelopersTableWide = props => {
   const [editingKey, setEditingKey] = useState('')
   const [getSelectedRowKeys, setSelectedRowKeys] = useState([])
   const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    setData(fields)
+  }, [fields])
+  console.log(data)
 
   const isEditing = record => record.key === editingKey
 

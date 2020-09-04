@@ -1,6 +1,7 @@
 const actions = {
   RESET_APP: 'service.RESET_APP',
   GET_PROJECTS: 'service/GET_PROJECTS',
+  GET_DATASETS: 'service/GET_DATASETS',
   GET_FIELDS: 'service/GET_FIELDS',
   GET_DROPDOWN: 'service/GET_DROPDOWN',
   GET_TESTPLANS: 'service/GET_TESTPLANS',

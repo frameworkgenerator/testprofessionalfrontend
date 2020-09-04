@@ -9,7 +9,7 @@ const initialState = {
   testSets: [],
   testCases: [],
   testSteps: [],
-  projectsWaitingForDeletion: [],
+  dataSets: [],
 }
 
 export default function userReducer(state = initialState, action) {
@@ -19,6 +19,8 @@ export default function userReducer(state = initialState, action) {
     case actions.GET_DROPDOWN:
       return { ...state, ...action.payload }
     case actions.GET_PROJECTS:
+      return { ...state, ...action.payload }
+    case actions.GET_DATASETS:
       return { ...state, ...action.payload }
     case actions.GET_TESTPLANS:
       return { ...state, ...action.payload }

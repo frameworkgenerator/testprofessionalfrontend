@@ -1,7 +1,7 @@
 import { notification } from 'antd'
 
-export default async function getTestCases() {
-  const response = await fetch('http://localhost:9009/v1/testset/get/1/testcases', {
+export default async function getProjectData() {
+  const response = await fetch('http://localhost:9009/v1/project/getall', {
     headers: {
       mode: 'cors',
       Accept: 'application/json',
@@ -14,5 +14,6 @@ export default async function getTestCases() {
       description: error.message,
     }),
   )
+  console.log(response.message)
   return response.json()
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import 'antd/dist/antd.css'
 import { Table, Input, InputNumber, Popconfirm, Form, Button, Tooltip, Space } from 'antd'
 import { Redirect, withRouter } from 'react-router-dom'
@@ -48,12 +48,16 @@ const EditableCell = ({
 
 const ProjectTableWide = ({ projects, dispatch, user }) => {
   const [form] = Form.useForm()
-  const [data, setData] = useState(projects)
+  const [data, setData] = useState([])
   const [editingKey, setEditingKey] = useState('')
   const [getSelectedRowKeys, setSelectedRowKeys] = useState([])
   const [open, setOpen] = useState(false)
   const [getChildKey, setChildKey] = useState(null)
   const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    setData(projects)
+  }, [projects])
 
   const isEditing = record => record.id === editingKey
 
@@ -68,15 +72,10 @@ const ProjectTableWide = ({ projects, dispatch, user }) => {
   }
 
   const onFinish = () => {
+    console.log(data)
     dispatch({
       type: 'service/SET_PROJECTS',
       payload: [...data],
-    })
-  }
-
-  const resetApp = () => {
-    dispatch({
-      type: 'service/RESET_APP',
     })
   }
 
@@ -189,7 +188,7 @@ const ProjectTableWide = ({ projects, dispatch, user }) => {
           <span>
             <a
               id={`Save_${record.id}`}
-              href="javascript:;"
+              href="javascript:void(0);"
               onClick={() => save(record.id)}
               style={{
                 marginRight: 8,
@@ -255,9 +254,9 @@ const ProjectTableWide = ({ projects, dispatch, user }) => {
     const getHighestIdPlusOne = Math.max(...saveIdToArray) + 1
     const createNewObject = {
       id: getHighestIdPlusOne,
-      description: `Description ${count}`,
+      description: `Description ${getHighestIdPlusOne}`,
       lead: `Lead`,
-      projectname: `Name ${count}`,
+      projectname: `Name ${getHighestIdPlusOne}`,
     }
     setData([...data, createNewObject])
     setCount(count + 1)
@@ -274,13 +273,6 @@ const ProjectTableWide = ({ projects, dispatch, user }) => {
         <Form layout="horizontal" hideRequiredMark className="mb-1 form-inline">
           <div className="site-button-ghost-wrapper">
             <Space>
-              <Button
-                type="primary"
-                shape="block"
-                onClick={resetApp}
-                loading={user.loading}
-                icon={<SaveOutlined />}
-              />
               <Tooltip title="save">
                 <Button
                   type="primary"
