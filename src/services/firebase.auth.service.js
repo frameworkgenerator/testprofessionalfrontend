@@ -1,8 +1,8 @@
 import firebase from 'firebase/app'
-import { notification } from 'antd'
 import 'firebase/auth'
 import 'firebase/database'
 import 'firebase/storage'
+import { history } from '../index'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBOWfLl_EoXMyKy9-gKbiHVHKC7UCixAe8',
@@ -16,54 +16,50 @@ const firebaseConfig = {
 }
 
 const firebaseApp = firebase.initializeApp(firebaseConfig)
-const firebaseAuth = firebase.auth()
+const firebaseAuth = firebase.auth
 export default firebaseApp
-const environment = ''
 
-export async function login() {
-  if (environment === 'stub') {
-    return true
-  }
-  const provider = new firebase.auth.GoogleAuthProvider()
-  provider.addScope('profile')
-  provider.addScope('email')
-  return firebaseAuth
-    .signInWithPopup(provider)
-    .then(function x(result) {
-      console.log(`Token: ${JSON.stringify(result)}`)
-      return true
+export async function login(email, password, tenant) {
+  let userLoaded = false
+  sessionStorage.setItem('email', email)
+  sessionStorage.setItem('password', password)
+  sessionStorage.setItem('tenant', tenant)
+
+  function getCurrentUser(auth) {
+    return new Promise((resolve, reject) => {
+      if (userLoaded) {
+        resolve(firebaseAuth.currentUser)
+      }
+      return auth.signInWithEmailAndPassword(email, password).then(user => {
+        userLoaded = true
+        resolve(user)
+      }, reject)
     })
-    .catch(error =>
-      notification.warning({
-        message: error.code,
-        description: error.message,
-      }),
-    )
+  }
+  history.push('/')
+  return getCurrentUser(firebaseAuth())
 }
 
 export async function currentAccount() {
-  if (environment === 'stub') {
-    return true
-  }
+  let userLoaded = false
   function getCurrentUser(auth) {
     return new Promise((resolve, reject) => {
+      if (userLoaded) {
+        resolve(firebaseAuth.currentUser)
+      }
       const unsubscribe = auth.onAuthStateChanged(user => {
-        if (user) {
-          user.getIdToken().then(function x(idToken) {
-            sessionStorage.setItem('token', idToken)
-          })
-        }
+        userLoaded = true
         unsubscribe()
         resolve(user)
       }, reject)
     })
   }
-  return getCurrentUser(firebaseAuth)
+  history.push('/')
+  return getCurrentUser(firebaseAuth())
 }
 
 export async function logout() {
-  if (environment === 'stub') {
-    return true
-  }
-  return firebaseAuth.signOut().then(() => true)
+  return firebaseAuth()
+    .signOut()
+    .then(() => true)
 }

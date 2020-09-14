@@ -33,7 +33,90 @@ const DataSets = ({ dataSets }) => {
     component: <AddItems datasetId={1} />,
   }
 
-  console.log(data)
+  const [backlogItems, setBacklogItems] = useState(
+    data.map(item => {
+      console.log(item)
+      if (item.datasetcontext.status === 'string') {
+        return (
+          <div className={style.card} key={item.id}>
+            <div className={style.content}>
+              <div className={`${style.flag} bg-primary`} />
+              <div className="d-flex flex-wrap-reverse align-items-center">
+                <h5 className="text-dark font-size-18 mt-2 mr-auto">{item.name}</h5>
+                <h5 className="text-dark font-size-8 mt-2 mr-auto">ID: {item.id}</h5>
+              </div>
+              <div className="text-gray-5 mb-2">Description: {item.description}</div>
+              <div>{agileItems.component}</div>
+            </div>
+          </div>
+        )
+      }
+      return <div>nothing found</div>
+    }),
+  )
+
+  const [todoItems, setTodoItems] = useState(
+    data.map(item => {
+      console.log(item)
+      if (item.datasetcontext.status === 'TODO') {
+        return (
+          <div className={style.card} key={item.id}>
+            <div className={style.content}>
+              <div className={`${style.flag} bg-primary`} />
+              <div className="d-flex flex-wrap-reverse align-items-center">
+                <h5 className="text-dark font-size-18 mt-2 mr-auto">{item.name}</h5>
+                <h5 className="text-dark font-size-8 mt-2 mr-auto">ID: {item.id}</h5>
+              </div>
+              <div className="text-gray-5 mb-2">Description: {item.description}</div>
+            </div>
+          </div>
+        )
+      }
+      return <div>nothing found</div>
+    }),
+  )
+
+  const [inprogressItems, setInprogressItems] = useState(
+    data.map(item => {
+      console.log(item)
+      if (item.datasetcontext.status === 'INPROGRESS') {
+        return (
+          <div className={style.card} key={item.id}>
+            <div className={style.content}>
+              <div className={`${style.flag} bg-primary`} />
+              <div className="d-flex flex-wrap-reverse align-items-center">
+                <h5 className="text-dark font-size-18 mt-2 mr-auto">{item.name}</h5>
+                <h5 className="text-dark font-size-8 mt-2 mr-auto">ID: {item.id}</h5>
+              </div>
+              <div className="text-gray-5 mb-2">Description: {item.description}</div>
+            </div>
+          </div>
+        )
+      }
+      return <div>nothing found</div>
+    }),
+  )
+
+  const [completed, setCompleted] = useState(
+    data.map(item => {
+      console.log(item)
+      if (item.datasetcontext.status === 'COMPLETED') {
+        return (
+          <div className={style.card} key={item.id}>
+            <div className={style.content}>
+              <div className={`${style.flag} bg-primary`} />
+              <div className="d-flex flex-wrap-reverse align-items-center">
+                <h5 className="text-dark font-size-18 mt-2 mr-auto">{item.name}</h5>
+                <h5 className="text-dark font-size-8 mt-2 mr-auto">ID: {item.id}</h5>
+              </div>
+              <div className="text-gray-5 mb-2">Description: {item.description}</div>
+            </div>
+          </div>
+        )
+      }
+      return <div>nothing found</div>
+    }),
+  )
 
   const update = async event => {
     const getIdFromTitle = event.item.innerText.split('ID: ')[1].split('Description')[0]
@@ -55,31 +138,12 @@ const DataSets = ({ dataSets }) => {
               <ReactSortable
                 group="issues"
                 style={{ minHeight: 500 }}
+                list={backlogItems}
+                setList={setBacklogItems}
                 key="id"
                 onChange={item => update(item)}
               >
-                {Array.isArray(data) && data.length ? (
-                  data.map(item => {
-                    if (item.datasetcontext.status === 'string') {
-                      return (
-                        <div className={style.card} key={item.id}>
-                          <div className={style.content}>
-                            <div className={`${style.flag} bg-primary`} />
-                            <div className="d-flex flex-wrap-reverse align-items-center">
-                              <h5 className="text-dark font-size-18 mt-2 mr-auto">{item.name}</h5>
-                              <h5 className="text-dark font-size-8 mt-2 mr-auto">ID: {item.id}</h5>
-                            </div>
-                            <div className="text-gray-5 mb-2">Description: {item.description}</div>
-                            <div>{agileItems.component}</div>
-                          </div>
-                        </div>
-                      )
-                    }
-                    return <div>nothing found</div>
-                  })
-                ) : (
-                  <div>Loading...</div>
-                )}
+                {backlogItems.map(item => item)}
               </ReactSortable>
             </div>
           </div>
@@ -89,32 +153,12 @@ const DataSets = ({ dataSets }) => {
               <ReactSortable
                 group="issues"
                 style={{ minHeight: 500 }}
+                list={todoItems}
+                setList={setTodoItems}
                 key="id"
                 onChange={item => update(item)}
               >
-                {Array.isArray(data) && data.length ? (
-                  data.map(item => {
-                    console.log(item)
-                    if (item.datasetcontext.status === 'string') {
-                      return (
-                        <div className={style.card} key={item.id}>
-                          <div className={style.content}>
-                            <div className={`${style.flag} bg-primary`} />
-                            <div className="d-flex flex-wrap-reverse align-items-center">
-                              <h5 className="text-dark font-size-18 mt-2 mr-auto">{item.name}</h5>
-                              <h5 className="text-dark font-size-8 mt-2 mr-auto">ID: {item.id}</h5>
-                            </div>
-                            <div className="text-gray-5 mb-2">Description: {item.description}</div>
-                            <div>{agileItems.component}</div>
-                          </div>
-                        </div>
-                      )
-                    }
-                    return <div>nothing found</div>
-                  })
-                ) : (
-                  <div>Loading...</div>
-                )}
+                {todoItems.map(item => item)}
               </ReactSortable>
             </div>
           </div>
@@ -124,31 +168,12 @@ const DataSets = ({ dataSets }) => {
               <ReactSortable
                 group="issues"
                 style={{ minHeight: 500 }}
+                list={inprogressItems}
+                setList={setInprogressItems}
                 key="id"
                 onChange={item => update(item)}
               >
-                {Array.isArray(data) && data.length ? (
-                  data.map(item => {
-                    console.log(item)
-                    if (item.datasetcontext.status === 'INPROGRESS') {
-                      return (
-                        <div className={style.card} key={item.id}>
-                          <div className={style.content}>
-                            <div className={`${style.flag} bg-primary`} />
-                            <div className="d-flex flex-wrap-reverse align-items-center">
-                              <h5 className="text-dark font-size-18 mt-2 mr-auto">{item.name}</h5>
-                              <h5 className="text-dark font-size-8 mt-2 mr-auto">ID: {item.id}</h5>
-                            </div>
-                            <div className="text-gray-5 mb-2">Description: {item.description}</div>
-                          </div>
-                        </div>
-                      )
-                    }
-                    return <div>nothing found</div>
-                  })
-                ) : (
-                  <div>Loading...</div>
-                )}
+                {inprogressItems.map(item => item)}
               </ReactSortable>
             </div>
           </div>
@@ -158,31 +183,12 @@ const DataSets = ({ dataSets }) => {
               <ReactSortable
                 group="issues"
                 style={{ minHeight: 500 }}
+                list={completed}
+                setList={setCompleted}
                 onChange={item => update(item)}
                 key="id"
               >
-                {Array.isArray(data) && data.length ? (
-                  data.map(item => {
-                    console.log(item)
-                    if (item.datasetcontext.status === 'COMPLETED') {
-                      return (
-                        <div className={style.card} key={item.id}>
-                          <div className={style.content}>
-                            <div className={`${style.flag} bg-primary`} />
-                            <div className="d-flex flex-wrap-reverse align-items-center">
-                              <h5 className="text-dark font-size-18 mt-2 mr-auto">{item.name}</h5>
-                              <h5 className="text-dark font-size-8 mt-2 mr-auto">ID: {item.id}</h5>
-                            </div>
-                            <div className="text-gray-5 mb-2">Description: {item.description}</div>
-                          </div>
-                        </div>
-                      )
-                    }
-                    return <div>nothing found</div>
-                  })
-                ) : (
-                  <div>Loading...</div>
-                )}
+                {completed.map(item => item)}
               </ReactSortable>
             </div>
           </div>

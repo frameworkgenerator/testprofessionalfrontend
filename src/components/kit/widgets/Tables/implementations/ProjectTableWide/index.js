@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import 'antd/dist/antd.css'
 import { Table, Input, InputNumber, Popconfirm, Form, Button, Tooltip, Space } from 'antd'
-import { Redirect, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { SaveOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons'
 
@@ -52,12 +52,14 @@ const ProjectTableWide = ({ projects, dispatch, user }) => {
   const [editingKey, setEditingKey] = useState('')
   const [getSelectedRowKeys, setSelectedRowKeys] = useState([])
   const [open, setOpen] = useState(false)
-  const [getChildKey, setChildKey] = useState(null)
+  const [, setChildKey] = useState(null)
   const [count, setCount] = useState(0)
 
   useEffect(() => {
     setData(projects)
   }, [projects])
+
+  console.log(projects)
 
   const isEditing = record => record.id === editingKey
 
@@ -108,24 +110,19 @@ const ProjectTableWide = ({ projects, dispatch, user }) => {
     setData(newDataArray)
   }
 
-  const sessionStorageStoreDataSetId = id => {
-    console.log('isEditing')
-    console.log(id)
-    console.log(getChildKey)
-    sessionStorage.setItem('dataSetId', getChildKey)
-  }
+  // const sessionStorageStoreDataSetId = id => {
+  //   console.log('isEditing')
+  //   console.log(id)
+  //   console.log(getChildKey)
+  //   sessionStorage.setItem('dataSetId', getChildKey)
+  // }
 
   const openProject = () => {
     if (open) {
-      sessionStorageStoreDataSetId(getChildKey)
-      return (
-        <Redirect
-          to={{
-            pathname: '/apps/dataset-management',
-            state: { id: getChildKey },
-          }}
-        />
-      )
+      dispatch({
+        type: 'service/GET_DATASETS',
+      })
+      return true
     }
     return false
   }

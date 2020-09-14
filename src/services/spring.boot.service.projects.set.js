@@ -1,4 +1,5 @@
 import { notification } from 'antd'
+import base64 from 'base-64'
 
 export default async function setProjectData(data) {
   console.log('try to set project')
@@ -9,7 +10,8 @@ export default async function setProjectData(data) {
       mode: 'cors',
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+      'Access-Control-Allow-Origin': 'http://localhost:3000',
+      Authorization: `Basic ${base64.encode(`h.bruins@ventus.nl:30Welkom1984_C`)}`,
     },
     body: JSON.stringify(data),
   }).catch(error =>

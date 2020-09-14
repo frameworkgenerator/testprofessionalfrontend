@@ -1,3 +1,4 @@
+import base64 from 'base-64'
 import { notification } from 'antd'
 
 export default async function getProjectData() {
@@ -6,7 +7,7 @@ export default async function getProjectData() {
       mode: 'cors',
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+      Authorization: `Basic ${base64.encode(`h.bruins@ventus.nl:30Welkom1984_C`)}`,
     },
   }).catch(error =>
     notification.warning({

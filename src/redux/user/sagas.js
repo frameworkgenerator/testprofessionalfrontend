@@ -1,28 +1,45 @@
-import { all, takeEvery, put, call } from 'redux-saga/effects'
-import { notification } from 'antd'
-import { history } from 'index'
+import { all, takeLatest, put, call } from 'redux-saga/effects'
 import { login, currentAccount, logout } from 'services/firebase.auth.service'
 import actions from './actions'
+import getProjectData from '../../services/spring.boot.service.projects.get'
 
 export function* LOGIN({ payload }) {
-  const { email, password } = payload
   yield put({
     type: 'user/SET_STATE',
     payload: {
       loading: true,
     },
   })
-  const success = yield call(login, email, password)
+  const { email, password, tenant } = payload
+  const response = yield call(login, email, password, tenant)
+  console.log('Login response')
+  console.log(JSON.stringify(response))
+  const projects = yield call(getProjectData)
+  const { uid: id, email: mail, photoURL: avatar, displayName } = response
   yield put({
-    type: 'user/LOAD_CURRENT_ACCOUNT',
+    type: 'user/SET_STATE',
+    payload: {
+      id,
+      name: 'Administrator',
+      email: mail,
+      avatar,
+      role: 'admin',
+      authorized: true,
+      displayName,
+    },
   })
-  if (success) {
-    yield history.push('/')
-    notification.success({
-      message: `Logged In`,
-      description: `${JSON.stringify(success)}`,
-    })
-  }
+  yield put({
+    type: 'service/GET_PROJECTS',
+    payload: {
+      projects,
+    },
+  })
+  yield put({
+    type: 'user/SET_STATE',
+    payload: {
+      loading: false,
+    },
+  })
 }
 
 export function* LOAD_CURRENT_ACCOUNT() {
@@ -32,9 +49,17 @@ export function* LOAD_CURRENT_ACCOUNT() {
       loading: true,
     },
   })
-
   const response = yield call(currentAccount)
   if (response) {
+    const projects = yield call(getProjectData)
+    if (projects) {
+      yield put({
+        type: 'service/GET_PROJECTS',
+        payload: {
+          projects,
+        },
+      })
+    }
     const { uid: id, email, photoURL: avatar, displayName } = response
     yield put({
       type: 'user/SET_STATE',
@@ -76,9 +101,8 @@ export function* LOGOUT() {
 
 export default function* rootSaga() {
   yield all([
-    takeEvery(actions.LOGIN, LOGIN),
-    takeEvery(actions.LOAD_CURRENT_ACCOUNT, LOAD_CURRENT_ACCOUNT),
-    takeEvery(actions.LOGOUT, LOGOUT),
+    takeLatest(actions.LOGIN, LOGIN),
+    takeLatest(actions.LOGOUT, LOGOUT),
     LOAD_CURRENT_ACCOUNT(), // run once on app load to check user auth
   ])
 }

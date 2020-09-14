@@ -1,5 +1,6 @@
 import { call, put, all, takeLeading } from 'redux-saga/effects'
 import { notification } from 'antd'
+import { history } from 'index'
 import getFieldData from 'services/spring.boot.service.fields'
 import getDropDownData from 'services/spring.boot.service.dropdown'
 import getProjectData from 'services/spring.boot.service.projects.get'
@@ -40,13 +41,13 @@ export function* RESET_APP() {
 }
 
 export function* GET_PROJECTS() {
-  const projects = yield call(getProjectData)
   yield put({
     type: 'user/SET_STATE',
     payload: {
       loading: true,
     },
   })
+  const projects = yield call(getProjectData)
   if (projects) {
     yield put({
       type: 'service/GET_PROJECTS',
@@ -64,14 +65,17 @@ export function* GET_PROJECTS() {
 }
 
 export function* GET_DATASETS() {
-  const dataSets = yield call(getDataSetData)
   yield put({
     type: 'user/SET_STATE',
     payload: {
       loading: true,
     },
   })
+  const dataSets = yield call(getDataSetData)
+  console.log(dataSets)
   if (dataSets) {
+    history.push('/apps/dataset-management')
+    console.log(dataSets)
     yield put({
       type: 'service/GET_DATASETS',
       payload: {
@@ -199,14 +203,14 @@ export default function* rootSaga() {
   yield all([
     takeLeading(actions.SET_PROJECTS, SET_PROJECTS),
     takeLeading(actions.DELETE_PROJECTS, DELETE_PROJECTS),
-    GET_FIELDS(), // run once on app load to fetch menu data
-    GET_DROPDOWN(),
-    GET_PROJECTS(),
-    GET_TESTPLANS(),
-    GET_TESTSETS(),
-    GET_TESTCASES(),
-    GET_TESTSTEPS(),
-    GET_TESTS(),
-    GET_DATASETS(),
+    takeLeading(actions.GET_FIELDS, GET_FIELDS),
+    takeLeading(actions.GET_DROPDOWN, GET_DROPDOWN),
+    takeLeading(actions.GET_PROJECTS, GET_PROJECTS),
+    takeLeading(actions.GET_TESTPLANS, GET_TESTPLANS),
+    takeLeading(actions.GET_TESTSETS, GET_TESTSETS),
+    takeLeading(actions.GET_TESTCASES, GET_TESTCASES),
+    takeLeading(actions.GET_TESTSTEPS, GET_TESTSTEPS),
+    takeLeading(actions.GET_TESTS, GET_TESTS),
+    takeLeading(actions.GET_DATASETS, GET_DATASETS),
   ])
 }
